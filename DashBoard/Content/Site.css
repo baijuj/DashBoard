@@ -1,0 +1,121 @@
+﻿header {
+    padding-left: 50px;
+}
+
+.navbar {
+    -webkit-box-shadow: 0px 3px 8px -7px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0px 3px 8px -7px rgba(0, 0, 0, 0.75);
+    box-shadow: 0px 3px 8px -7px rgba(0, 0, 0, 0.75);
+    background-color: #5DADE2 !important;
+}
+
+.navbar-nav {
+    width: 100%;
+    min-height: 40px;
+}
+
+.user-container {
+    right: 30px;
+    position: absolute;
+}
+
+.sidebar {
+    position: fixed;
+    left: 0;
+    width: 50px;
+    bottom: 0px;
+    top: 56px;
+    background: #34495E;
+    -webkit-transition: width .5s;
+    /* For Safari 3.1 to 6.0 */
+    transition: width .5s;
+}
+
+    .sidebar .fa {
+        color: #fff;
+        display: inline-block;
+        font-size: 21px;
+        text-align: center;
+    }
+
+.toggle-btn {
+    min-height: 56px;
+    padding: 10px;
+    position: absolute;
+    left: 0;
+    z-index: 9;
+    width: 50px;
+    background: #34495E;
+    cursor: pointer;
+}
+
+    .toggle-btn .fa {
+        font-size: 21px;
+        padding-left: 4px;
+        padding-top: 10px;
+        color: #fff;
+        padding-left: 4px;
+    }
+
+.sidebar-items ul {
+    padding: 0px;
+    list-style-type: none;
+}
+
+    .sidebar-items ul li.sidebar-item {
+        padding: 10px;
+    }
+
+        .sidebar-items ul li.sidebar-item span {
+            color: #fff;
+            position: absolute;
+            left: 45px;
+        }
+
+.sidebar-collapse .sidebar-items ul li.sidebar-item span {
+    display: none;
+}
+
+.sidebar-collapse.in {
+    width: 200px;
+}
+
+    .sidebar-collapse.in .sidebar-items ul li.sidebar-item span {
+        display: inline-block;
+    }
+
+.user-details img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+.user-container .dropdown-toggle::after {
+    position: absolute;
+    right: -10px;
+    top: 20px;
+}
+
+.user-container .dropdown-menu {
+    left: -18px;
+}
+
+.sidebar-items ul li.sidebar-item {
+    border-left: 2px solid transparent;
+}
+
+    .sidebar-items ul li.sidebar-item:hover {
+        background: #85929E;
+    }
+
+    .sidebar-items ul li.sidebar-item.active {
+        border-color: #fff;
+    }
+
+.main-body-container {
+    padding-left: 65px;
+    padding-top: 15px;
+    width: 100%;
+    height: calc(100vh - 56px);
+    overflow: auto;
+}

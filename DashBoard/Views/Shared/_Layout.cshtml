@@ -1,0 +1,89 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/Site.css" rel="stylesheet" />
+    <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
+</head>
+
+<body>
+    <header>
+        <div class="toggle-btn">
+            <i class="fa fa-bars" aria-hidden="true"></i>
+        </div>
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <a class="navbar-brand" style="color:white">Data Visualization Tool</a>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link"></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"></a>
+                </li>
+
+
+                <li class="nav-item dropdown user-container">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                        <div class="user-details">
+                            <img src="~/Content/images/user.png" />
+                            <span style="color:white">Baiju John</span>
+                        </div>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#">Log Out</a>
+
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <div class="sidebar sidebar-collapse">
+        <div class="sidebar-items">
+            <ul>
+                <li class="sidebar-item active">
+                    <i class="fa fa-home" aria-hidden="true"></i>
+                    <span>Home</span>
+                </li>
+                <li class="sidebar-item">
+                    <i class="fa fa-folder-open-o" aria-hidden="true"></i>
+                    <span>Create</span>
+                </li>
+                <li class="sidebar-item">
+                    <i class="fa fa-line-chart" aria-hidden="true"></i>
+                    <span>Connect</span>
+                </li>
+                <li class="sidebar-item">
+                    <i class="fa fa-tasks" aria-hidden="true"></i>
+                    <span>Share</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="main-body-container">
+        @RenderBody()
+    </div>
+
+
+
+    @*<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>*@
+    <script src="~/Scripts/jquery-3.0.0.min.js"></script>
+    <script src="~/Scripts/popper.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.toggle-btn').click(function () {
+                $('.sidebar').toggleClass('in');
+            });
+        });
+    </script>
+</body>
+
+</html>
