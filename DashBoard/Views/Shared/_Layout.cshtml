@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNet.Identity
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -7,9 +8,8 @@
     <meta name="keywords" content="">
     <meta name="author" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
-    <link href="~/Content/Site.css" rel="stylesheet" />
-    <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
 </head>
 
 <body>
@@ -28,18 +28,28 @@
                 </li>
 
 
-                <li class="nav-item dropdown user-container">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-                        <div class="user-details">
-                            <img src="~/Content/images/user.png" />
-                            <span style="color:white">Baiju John</span>
-                        </div>
-                    </a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Log Out</a>
+                @if (Request.IsAuthenticated)
+                {
+                    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+                    {
+                        @Html.AntiForgeryToken()
 
-                    </div>
-                </li>
+                        <li class="nav-item dropdown user-container">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                                <div class="user-details">
+                                    <img src="~/Content/images/user.png" />
+                                    <span style="color:white">@User.Identity.GetUserName()</span>
+                                </div>
+                            </a>
+                            <div class="dropdown-menu">
+
+                                <a class="dropdown-item" href="javascript:document.getElementById('logoutForm').submit()">Log off</a>
+                            </div>
+                        </li>
+
+
+                    }
+                }
             </ul>
         </nav>
     </header>
@@ -71,12 +81,9 @@
 
 
 
-    @*<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>*@
-    <script src="~/Scripts/jquery-3.0.0.min.js"></script>
-    <script src="~/Scripts/popper.min.js"></script>
-    <script src="~/Scripts/bootstrap.min.js"></script>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
     <script>
         $(document).ready(function () {
             $('.toggle-btn').click(function () {
