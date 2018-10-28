@@ -1,0 +1,190 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="DashBoardDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="DashBoard">
+          <Key>
+            <PropertyRef Name="DashBoardID" />
+          </Key>
+          <Property Name="DashBoardID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DashBoardName" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="DashBoardUserMap">
+          <Key>
+            <PropertyRef Name="DashBoardUserMapID" />
+          </Key>
+          <Property Name="DashBoardUserMapID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DashBoardID" Type="int" Nullable="false" />
+          <Property Name="UserID" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="IsOwner" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="DataSource">
+          <Key>
+            <PropertyRef Name="DataSourceID" />
+          </Key>
+          <Property Name="DataSourceID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DataSourceType" Type="nvarchar" MaxLength="100" />
+          <Property Name="InputParams" Type="xml" />
+        </EntityType>
+        <EntityType Name="Widget">
+          <Key>
+            <PropertyRef Name="WidgetID" />
+          </Key>
+          <Property Name="WidgetID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="WidgetTypeID" Type="int" Nullable="false" />
+          <Property Name="DashboardID" Type="int" Nullable="false" />
+          <Property Name="DataSourceID" Type="int" Nullable="false" />
+          <Property Name="WidgetTypeInputParamValues" Type="xml" />
+          <Property Name="DataSourceInputParamValues" Type="xml" />
+        </EntityType>
+        <EntityType Name="WidgetType">
+          <Key>
+            <PropertyRef Name="WidgetTypeID" />
+          </Key>
+          <Property Name="WidgetTypeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="WidgetName" Type="nvarchar" MaxLength="100" />
+          <Property Name="InputParams" Type="xml" />
+        </EntityType>
+        <EntityContainer Name="DashBoardDBModelStoreContainer">
+          <EntitySet Name="DashBoard" EntityType="Self.DashBoard" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DashBoardUserMap" EntityType="Self.DashBoardUserMap" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DataSource" EntityType="Self.DataSource" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Widget" EntityType="Self.Widget" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="WidgetType" EntityType="Self.WidgetType" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="DashBoardDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="DashBoard">
+          <Key>
+            <PropertyRef Name="DashBoardID" />
+          </Key>
+          <Property Name="DashBoardID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DashBoardName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="DashBoardUserMap">
+          <Key>
+            <PropertyRef Name="DashBoardUserMapID" />
+          </Key>
+          <Property Name="DashBoardUserMapID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DashBoardID" Type="Int32" Nullable="false" />
+          <Property Name="UserID" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="IsOwner" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="DataSource">
+          <Key>
+            <PropertyRef Name="DataSourceID" />
+          </Key>
+          <Property Name="DataSourceID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DataSourceType" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="InputParams" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Widget">
+          <Key>
+            <PropertyRef Name="WidgetID" />
+          </Key>
+          <Property Name="WidgetID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="WidgetTypeID" Type="Int32" Nullable="false" />
+          <Property Name="DashboardID" Type="Int32" Nullable="false" />
+          <Property Name="DataSourceID" Type="Int32" Nullable="false" />
+          <Property Name="WidgetTypeInputParamValues" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DataSourceInputParamValues" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="WidgetType">
+          <Key>
+            <PropertyRef Name="WidgetTypeID" />
+          </Key>
+          <Property Name="WidgetTypeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="WidgetName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="InputParams" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityContainer Name="DashBoardDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="DashBoards" EntityType="Self.DashBoard" />
+          <EntitySet Name="DashBoardUserMaps" EntityType="Self.DashBoardUserMap" />
+          <EntitySet Name="DataSources" EntityType="Self.DataSource" />
+          <EntitySet Name="Widgets" EntityType="Self.Widget" />
+          <EntitySet Name="WidgetTypes" EntityType="Self.WidgetType" />
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="DashBoardDBModelStoreContainer" CdmEntityContainer="DashBoardDBEntities">
+          <EntitySetMapping Name="DashBoards">
+            <EntityTypeMapping TypeName="DashBoardDBModel.DashBoard">
+              <MappingFragment StoreEntitySet="DashBoard">
+                <ScalarProperty Name="DashBoardID" ColumnName="DashBoardID" />
+                <ScalarProperty Name="DashBoardName" ColumnName="DashBoardName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DashBoardUserMaps">
+            <EntityTypeMapping TypeName="DashBoardDBModel.DashBoardUserMap">
+              <MappingFragment StoreEntitySet="DashBoardUserMap">
+                <ScalarProperty Name="DashBoardUserMapID" ColumnName="DashBoardUserMapID" />
+                <ScalarProperty Name="DashBoardID" ColumnName="DashBoardID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="IsOwner" ColumnName="IsOwner" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DataSources">
+            <EntityTypeMapping TypeName="DashBoardDBModel.DataSource">
+              <MappingFragment StoreEntitySet="DataSource">
+                <ScalarProperty Name="DataSourceID" ColumnName="DataSourceID" />
+                <ScalarProperty Name="DataSourceType" ColumnName="DataSourceType" />
+                <ScalarProperty Name="InputParams" ColumnName="InputParams" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Widgets">
+            <EntityTypeMapping TypeName="DashBoardDBModel.Widget">
+              <MappingFragment StoreEntitySet="Widget">
+                <ScalarProperty Name="WidgetID" ColumnName="WidgetID" />
+                <ScalarProperty Name="WidgetTypeID" ColumnName="WidgetTypeID" />
+                <ScalarProperty Name="DashboardID" ColumnName="DashboardID" />
+                <ScalarProperty Name="DataSourceID" ColumnName="DataSourceID" />
+                <ScalarProperty Name="WidgetTypeInputParamValues" ColumnName="WidgetTypeInputParamValues" />
+                <ScalarProperty Name="DataSourceInputParamValues" ColumnName="DataSourceInputParamValues" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WidgetTypes">
+            <EntityTypeMapping TypeName="DashBoardDBModel.WidgetType">
+              <MappingFragment StoreEntitySet="WidgetType">
+                <ScalarProperty Name="WidgetTypeID" ColumnName="WidgetTypeID" />
+                <ScalarProperty Name="WidgetName" ColumnName="WidgetName" />
+                <ScalarProperty Name="InputParams" ColumnName="InputParams" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="false" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
