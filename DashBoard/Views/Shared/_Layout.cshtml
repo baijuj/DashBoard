@@ -8,8 +8,17 @@
     <meta name="keywords" content="">
     <meta name="author" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="http://kendo.cdn.telerik.com/2018.3.1017/styles/kendo.common.min.css" />
+    <link rel="stylesheet" href="http://kendo.cdn.telerik.com/2018.3.1017/styles/kendo.blueopal.min.css" />
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script src="http://kendo.cdn.telerik.com/2018.3.1017/js/kendo.all.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.gridster/0.5.6/jquery.gridster.min.js"></script>
+    <link href="//cdnjs.cloudflare.com/ajax/libs/jquery.gridster/0.5.6/jquery.gridster.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -81,8 +90,6 @@
 
 
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
     <script>
         $(document).ready(function () {
