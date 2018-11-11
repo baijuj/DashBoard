@@ -22,7 +22,7 @@ namespace DashBoard.Models
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            throw new UnintentionalCodeFirstException();
+            //throw new UnintentionalCodeFirstException();
         }
     
         public virtual DbSet<DashBoard> DashBoards { get; set; }

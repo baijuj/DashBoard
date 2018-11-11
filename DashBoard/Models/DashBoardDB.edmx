@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="DashBoardDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="DashBoardDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="DashBoard">
           <Key>
             <PropertyRef Name="DashBoardID" />
@@ -39,6 +39,9 @@
           <Property Name="DataSourceID" Type="int" Nullable="false" />
           <Property Name="WidgetTypeInputParamValues" Type="xml" />
           <Property Name="DataSourceInputParamValues" Type="xml" />
+          <Property Name="WidgetName" Type="nvarchar" MaxLength="500" />
+          <Property Name="Height" Type="int" />
+          <Property Name="Width" Type="int" />
         </EntityType>
         <EntityType Name="WidgetType">
           <Key>
@@ -46,7 +49,7 @@
           </Key>
           <Property Name="WidgetTypeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="WidgetName" Type="nvarchar" MaxLength="100" />
-          <Property Name="InputParams" Type="xml" />
+          <Property Name="WidgetSchema" Type="nvarchar(max)" />
         </EntityType>
         <EntityContainer Name="DashBoardDBModelStoreContainer">
           <EntitySet Name="DashBoard" EntityType="Self.DashBoard" Schema="dbo" store:Type="Tables" />
@@ -55,8 +58,7 @@
           <EntitySet Name="Widget" EntityType="Self.Widget" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WidgetType" EntityType="Self.WidgetType" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="DashBoardDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -94,6 +96,9 @@
           <Property Name="DataSourceID" Type="Int32" Nullable="false" />
           <Property Name="WidgetTypeInputParamValues" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="DataSourceInputParamValues" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="WidgetName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Height" Type="Int32" />
+          <Property Name="Width" Type="Int32" />
         </EntityType>
         <EntityType Name="WidgetType">
           <Key>
@@ -101,7 +106,8 @@
           </Key>
           <Property Name="WidgetTypeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="WidgetName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="InputParams" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+
+          <Property Name="WidgetSchema" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityContainer Name="DashBoardDBEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="DashBoards" EntityType="Self.DashBoard" />
@@ -146,6 +152,9 @@
           <EntitySetMapping Name="Widgets">
             <EntityTypeMapping TypeName="DashBoardDBModel.Widget">
               <MappingFragment StoreEntitySet="Widget">
+                <ScalarProperty Name="Width" ColumnName="Width" />
+                <ScalarProperty Name="Height" ColumnName="Height" />
+                <ScalarProperty Name="WidgetName" ColumnName="WidgetName" />
                 <ScalarProperty Name="WidgetID" ColumnName="WidgetID" />
                 <ScalarProperty Name="WidgetTypeID" ColumnName="WidgetTypeID" />
                 <ScalarProperty Name="DashboardID" ColumnName="DashboardID" />
@@ -158,9 +167,9 @@
           <EntitySetMapping Name="WidgetTypes">
             <EntityTypeMapping TypeName="DashBoardDBModel.WidgetType">
               <MappingFragment StoreEntitySet="WidgetType">
+                <ScalarProperty Name="WidgetSchema" ColumnName="WidgetSchema" />
                 <ScalarProperty Name="WidgetTypeID" ColumnName="WidgetTypeID" />
                 <ScalarProperty Name="WidgetName" ColumnName="WidgetName" />
-                <ScalarProperty Name="InputParams" ColumnName="InputParams" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

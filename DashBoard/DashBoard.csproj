@@ -205,6 +205,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\ApiChart.cs" />
     <Compile Include="Models\DashBoard.cs">
       <DependentUpon>DashBoardDB.tt</DependentUpon>
     </Compile>
@@ -223,6 +224,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>DashBoardDB.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\DashboardModel.cs" />
     <Compile Include="Models\DashBoardUserMap.cs">
       <DependentUpon>DashBoardDB.tt</DependentUpon>
     </Compile>
@@ -234,6 +236,7 @@
     <Compile Include="Models\Widget.cs">
       <DependentUpon>DashBoardDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\WidgetSchemaMapper.cs" />
     <Compile Include="Models\WidgetType.cs">
       <DependentUpon>DashBoardDB.tt</DependentUpon>
     </Compile>

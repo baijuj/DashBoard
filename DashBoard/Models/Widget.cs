@@ -20,5 +20,11 @@ namespace DashBoard.Models
         public int DataSourceID { get; set; }
         public string WidgetTypeInputParamValues { get; set; }
         public string DataSourceInputParamValues { get; set; }
+        public string WidgetName { get; set; }
+        public int Height { get; set; }
+        public int Width { get; set; }
+
+        public virtual DataSource DataSource { get; set; }
+        public virtual WidgetType WidgetType { get; set; }
     }
 }

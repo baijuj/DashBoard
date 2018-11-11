@@ -1,259 +1,166 @@
-﻿
-@{
-    ViewBag.Title = "Test";
+﻿@{
+    ViewBag.Title = "Home Page";
 }
-<style>
-        /*! gridster.js - v0.6.10 - 2015-05-31
-    * https://dsmorse.github.io/gridster.js/
-    * Copyright (c) 2015 ducksboard; Licensed MIT */
+@using System.Globalization;
+@model DashBoard.Models.DashboardModel
+<div class="gridster">
+    <ul></ul>
+</div>
 
-
-        h1,
-        h2,
-        h3,
-        p {
-            margin: 10px;
-        }
-
-        table {
-            border-collapse: collapse;
-            border-spacing: 0;
-        }
-
-        .demo {
-            margin: 3em 0;
-            padding: 7.5em 0 5.5em;
-            background: #26941f;
-        }
-
-            .demo:hover .gridster {
-                margin: 0 auto;
-                opacity: .8;
-                -webkit-transition: opacity .6s;
-                -moz-transition: opacity .6s;
-                -o-transition: opacity .6s;
-                -ms-transition: opacity .6s;
-                transition: opacity .6s;
-            }
-
-        .content {
-            color: white;
-        }
-
-        .gridster .gs-w {
-            background: #61A9CF;
-            cursor: pointer;
-            -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-        }
-
-        .gridster .player {
-            -webkit-box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
-            box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
-            background: #BBB;
-        }
-
-        .gridster .gs-w.try {
-            background-image: url(../img/sprite.png);
-            background-repeat: no-repeat;
-            background-position: 37px -169px;
-        }
-
-        .gridster .preview-holder {
-            border: none !important;
-            border-radius: 0 !important;
-            background: red !important;
-        }
-
-        .gridster ul {
-            background-color: #EFEFEF;
-        }
-
-        .gridster li {
-            font-size: 1em;
-            font-weight: bold;
-            text-align: center;
-            line-height: 100%;
-        }
-
-        ul {
-            list-style-type: none;
-        }
-
-        li {
-            list-style: none;
-            font-weight: bold;
-        }
-
-        .gridster-box {
-            position: relative;
-            width: 100%;
-            height: 100%;
-        }
-
-        .controls {
-            margin-bottom: 20px;
-        }
-</style>
 <script>
-    //chart code
-    var internetUsers = [{
-        "country": "United States",
-        "year": "2005",
-        "value": 67.96
-    }, {
-        "country": "United States",
-        "year": "2006",
-        "value": 68.93
-    }, {
-        "country": "United States",
-        "year": "2007",
-        "value": 75
-    }, {
-        "country": "United States",
-        "year": "2008",
-        "value": 74
-    }, {
-        "country": "United States",
-        "year": "2009",
-        "value": 78
-    }];
-
-    function createChart(chart) {
-        $('#' + chart).kendoChart({
-            theme: $(document).data("kendoSkin") || "default",
-            //chartArea: {
-            //    width: 200,
-            //    height: 200
-            //},
-            dataSource: {
-                data: internetUsers
-            },
-            title: {
-                text: "Internet Users"
-            },
-            legend: {
-                position: "bottom"
-            },
-            seriesDefaults: {
-                type: "bar",
-                labels: {
-                    visible: true,
-                    format: "{0}%"
-                }
-            },
-            series: [{
-                field: "value",
-                name: "United States"
-            }],
-            valueAxis: {
-                labels: {
-                    format: "{0}%"
-                }
-            },
-            categoryAxis: {
-                field: "year"
-            }
-        });
-
-        $('#' + chart).css("height", $('#' + chart).parent().parent().innerHeight() - 25 + "px").data("kendoChart").resize();
-    }
-    ////
-
-
-    var chartNo=1;
-    var gridster;
-    $(function () {
-
-       // gridster = $(".gridster ul").gridster({
-       //     widget_base_dimensions: [240, 240],
-       //     widget_margins: [5, 5],
-       //     max_cols: 4,
-       //     max_rows: 3,
-       //     resize: {
-       //         enabled: true,
-       //         start: function (e, ui, $widget) {
-       //             log.innerHTML = 'START position: ' + ui.position.top + ' ' + ui.position.left + "<br >" + log.innerHTML;
-       //         },
-
-       //         resize: function (e, ui, $widget) {
-       //             log.innerHTML = 'RESIZE offset: ' + ui.pointer.diff_top + ' ' + ui.pointer.diff_left + "<br >" + log.innerHTML;
-       //         },
-
-       //         stop: function (e, ui, $widget) {
-       //             log.innerHTML = 'STOP position: ' + ui.position.top + ' ' + ui.position.left + "<br >" + log.innerHTML;
-       //             alert("sdf");
-       //         }
-       //     },
-       //     helper: 'clone'
-
-       //}).data('gridster');
+    $(document).ready(function () {
 
         gridster = $(".gridster ul").gridster({
-            widget_base_dimensions: [350, 240],
+            widget_base_dimensions: [400, 250],
             widget_margins: [10, 10],
             max_cols: 4,
             helper: 'clone',
             resize: {
                 enabled: true,
                 start: function (e, ui, $widget) {
-
                 },
-
                 resize: function (e, ui, $widget) {
-
+                },
+                stop: function (e, ui, $widget) {
                     var chart = $widget.find('.myChart')
                     chart.css("height", chart.parent().parent().innerHeight() - 25 + "px").data("kendoChart").resize();
                     chart.css("width", chart.parent().parent().innerWidth() + "px").data("kendoChart").resize();
-                },
-
-                stop: function (e, ui, $widget) {
-
-                    var chart = $widget.find('.myChart')
-                    chart.css("height", chart.parent().parent().innerHeight() - 25 + "px").data("kendoChart").resize();
-                    chart.css("width", chart.parent().parent().innerWidth()  + "px").data("kendoChart").resize();
-
                 }
             }
         }).data('gridster');
 
-        $('.gridster').on("click", ".delete-button", function () {
-           gridster.remove_widget($(this).parent());
-            //alert("Settings");
+       @{
+           foreach (var item in Model.Widgets)
+           {
+               <text>
+                  var $widget = $('<li>', {
+                         'class': 'color_'
+                  })
+                    .append("<div style='padding-top:5px;float:left'><i id='setting_@(item.WidgetID)' class='fa fa-gear' aria-hidden='true'></div>")
+                    .append($("<div style='float:right'><button  class='close' ><span aria-hidden='true'>&times;</span></button></div>"))
+                    .append($('<div class="chart-wrapper" style="margin:10px"><div id="chart@(item.WidgetID)" class="myChart"></div></div>'));
+                    // add widget to the grid
+                    gridster.add_widget($widget,  @(item.Width), @(item.Height));
+                    function createChart@(item.WidgetID)() {
+                        $("#chart@(item.WidgetID)").@(item.WidgetRenderType)(
+                                @(Html.Raw(item.WidgetSchema))
+                        );
+                         $("#chart@(item.WidgetID)").css("height", $("#chart@(item.WidgetID)").parent().parent().innerHeight() - 25 + "px").data("@(item.WidgetRenderType)").resize();
+                    }
+                    $(document).ready(createChart@(item.WidgetID));
+
+                 </text>
+               }
+           }
+
+
+        $('.gridster').on("click", ".close", function () {
+            gridster.remove_widget($(this).parent());
         });
 
-        $("#addbutton").on("click", function () {
+       
 
-            var $widget = $('<li>', {
-                'class': 'color_'
-            })
-                .append($('<button>', {
-                    'class': 'delete-button',
-                    'text': '-'
-                }))
-                .append($('<div class="chart-wrapper"><div id=chart' + chartNo + ' class=myChart></div></div>'));
 
-            // add widget to the grid
-            gridster.add_widget($widget, 1, 1);
+      
 
-            createChart("chart" + chartNo);
-            chartNo = chartNo + 1;
-        });
     });
 
-
-
 </script>
-<button id="addbutton" class="add-button">Add Widget</button>
-<br />
-<div class="gridster">
-    <ul>
-        @*<li data-row="1" data-col="1" data-sizex="1" data-sizey="1">
-                <button class="delete-button">-</button>
-                <h3>1</h3>
-            </li>*@
-    </ul>
-</div>
+
+<style>
+    /*! gridster.js - v0.6.10 - 2015-05-31
+                        * https://dsmorse.github.io/gridster.js/
+                        * Copyright (c) 2015 ducksboard; Licensed MIT */
 
 
+    h1,
+    h2,
+    h3,
+    p {
+        margin: 10px;
+    }
 
+    table {
+        border-collapse: collapse;
+        border-spacing: 0;
+    }
+
+    .demo {
+        margin: 3em 0;
+        padding: 7.5em 0 5.5em;
+        background: #26941f;
+    }
+
+        .demo:hover .gridster {
+            margin: 0 auto;
+            opacity: .8;
+            -webkit-transition: opacity .6s;
+            -moz-transition: opacity .6s;
+            -o-transition: opacity .6s;
+            -ms-transition: opacity .6s;
+            transition: opacity .6s;
+        }
+
+    .content {
+        color: white;
+    }
+
+    .gridster .gs-w {
+        background: #61A9CF;
+        cursor: pointer;
+        -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    }
+
+    .gridster .player {
+        -webkit-box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+        box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+        background: #BBB;
+    }
+
+    .gridster .gs-w.try {
+        background-image: url(../img/sprite.png);
+        background-repeat: no-repeat;
+        background-position: 37px -169px;
+    }
+
+    .gridster .preview-holder {
+        border: none !important;
+        border-radius: 0 !important;
+        background: red !important;
+    }
+
+    .gridster ul {
+        background-color: #EFEFEF;
+    }
+
+    .gridster li {
+        font-size: 1em;
+        font-weight: bold;
+        text-align: center;
+        line-height: 100%;
+    }
+
+    ul {
+        list-style-type: none;
+    }
+
+    li {
+        list-style: none;
+        font-weight: bold;
+    }
+
+    .gridster-box {
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
+
+    label {
+        font-size: 11px !important;
+    }
+
+    .controls {
+        margin-bottom: 20px;
+    }
+</style>

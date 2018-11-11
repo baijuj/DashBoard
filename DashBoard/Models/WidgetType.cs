@@ -16,6 +16,6 @@ namespace DashBoard.Models
     {
         public int WidgetTypeID { get; set; }
         public string WidgetName { get; set; }
-        public string InputParams { get; set; }
+        public string WidgetSchema { get; set; }
     }
 }
