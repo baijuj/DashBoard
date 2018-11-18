@@ -23,7 +23,8 @@ namespace DashBoard.Models
         public string WidgetName { get; set; }
         public int Height { get; set; }
         public int Width { get; set; }
-
+        public Nullable<int> Column { get; set; }
+        public Nullable<int> Row { get; set; }
         public virtual DataSource DataSource { get; set; }
         public virtual WidgetType WidgetType { get; set; }
     }

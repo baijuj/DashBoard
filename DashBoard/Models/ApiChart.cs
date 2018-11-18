@@ -48,13 +48,14 @@ namespace DashBoard.Models
     }
     public class DonutSeries
     {
+        public string type { get; set; }
         public string field { get; set; }
         public string categoryField { get; set; }
         public string visibleInLegendField { get; set; }
-        public int padding { get; set; }
     }
     public class Series
     {
+        public string type { get; set; }
         public string field { get; set; }
         public string categoryField { get; set; }
         public string name { get; set; }
@@ -93,7 +94,6 @@ namespace DashBoard.Models
     public class ValueAxis
     {
         public Labels2 labels { get; set; }
-        public int majorUnit { get; set; }
         public Line line { get; set; }
     }
 
@@ -105,6 +105,7 @@ namespace DashBoard.Models
     }
     public class Chart
     {
+
         public APIDataSource dataSource { get; set; }
         public Title title { get; set; }
         public Legend legend { get; set; }
@@ -115,12 +116,13 @@ namespace DashBoard.Models
         public int width { get; set; }
         public int hieght { get; set; }
     }
-    public class BarChart:Chart
+    public class ApiChart : Chart
     {
         public List<Series> series { get; set; }
     }
-    public class DonutChart:Chart
+    public class DonutChart : Chart
     {
         public List<DonutSeries> series { get; set; }
     }
+
 }

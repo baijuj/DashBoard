@@ -7,19 +7,27 @@ namespace DashBoard.Models
 {
     public class DashboardModel
     {
-        public DashboardModel() {
+        public DashboardModel()
+        {
             Widgets = new List<WidgetModel>();
         }
         public List<WidgetModel> Widgets { get; set; }
     }
-    public class WidgetModel  {
+    public class WidgetModel
+    {
         public int WidgetID { get; set; }
         public string WidgetName { get; set; }
         public string WidgetType { get; set; }
         public string WidgetSchema { get; set; }
-        public string WidgetRenderType  {get;set;}
+        public string WidgetRenderType { get; set; }
         public int Height { get; set; }
         public int Width { get; set; }
+        public Nullable<int> Column { get; set; }
+        public Nullable<int> Row { get; set; }
+        public int WidgetTypeID { get; set; }
+        public ApiChart ApiChart { get; set; }
+        public DonutChart DonutChart { get; set; }
+
     }
     //public class WidgetType
     //{
@@ -27,10 +35,11 @@ namespace DashBoard.Models
     //    public string TypeName { get; set; }
     //    public string WidgetSchema { get; set; }
     //}
-    public class WidgetTypeParams {
+    public class WidgetTypeParams
+    {
         public string Url { get; set; }
     }
-    public class CandleStickWidgetTypeParams: WidgetTypeParams
+    public class CandleStickWidgetTypeParams : WidgetTypeParams
     {
         public string OpenField { get; set; }
         public string CloseField { get; set; }
@@ -39,7 +48,8 @@ namespace DashBoard.Models
         public string DateField { get; set; }
     }
 
-    public class ChartModel {
+    public class ChartModel
+    {
 
         public int ChartID { get; set; }
         public int Title { get; set; }
@@ -48,7 +58,8 @@ namespace DashBoard.Models
         public List<ChartSeriesModel> Series { get; set; }
 
     }
-    public class ChartDataSourceModel {
+    public class ChartDataSourceModel
+    {
         public string Url { get; set; }
         public string DataType { get; set; }
     }

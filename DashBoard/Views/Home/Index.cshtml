@@ -6,7 +6,9 @@
 <div class="gridster">
     <ul></ul>
 </div>
-
+<div id="dialog" style="visibility:hidden;background-color:Window">
+    @{Html.RenderPartial("_widget"); }
+</div>
 <script>
     $(document).ready(function () {
 
@@ -15,6 +17,35 @@
             widget_margins: [10, 10],
             max_cols: 4,
             helper: 'clone',
+            draggable:
+            {
+                enabled: true,
+                start: function (event, ui) {
+                  //  console.log("started the draggable event");
+                },
+                stop: function (e, ui, $widget) {
+                    var newPosition = this.serialize(this.$widgets.filter(".player-revert"))[0]
+                    var field = this.$widgets.filter(".player-revert")[0].getElementsByClassName("myChart");
+                    if (field != null) {
+                        var widgetId = field[0].getAttribute("id").replace("chart", "");
+                        if (!isNaN(newPosition.col) && !isNaN(newPosition.row)) {
+                            $.ajax({
+                                type: "POST",
+                                url: '@Url.Action("RepositionWidget", "Home", new { } )',
+                                data: JSON.stringify({ WidgetID: widgetId, Column: newPosition.col, Row: newPosition.row }),
+                                dataType: "json",
+                                contentType: 'application/json; charset=utf-8',
+                                success: function (data) {
+                                },
+                                error: function () {
+                                }
+                            });
+                        }
+                    }
+
+                }
+
+            },
             resize: {
                 enabled: true,
                 start: function (e, ui, $widget) {
@@ -25,6 +56,21 @@
                     var chart = $widget.find('.myChart')
                     chart.css("height", chart.parent().parent().innerHeight() - 25 + "px").data("kendoChart").resize();
                     chart.css("width", chart.parent().parent().innerWidth() + "px").data("kendoChart").resize();
+                    var newDimensions = this.serialize($widget)[0]
+                    var widgetId = $widget.find('.myChart').attr("id").replace("chart", "");
+                    if (!isNaN(newDimensions.size_x) && !isNaN(newDimensions.size_y)) {
+                       $.ajax({
+                            type: "POST",
+                           url: '@Url.Action("ResizeWidget", "Home", new { } )',
+                           data:JSON.stringify({ WidgetID: widgetId, Width: newDimensions.size_x, Height: newDimensions.size_y }),
+                            dataType: "json",
+                            contentType: 'application/json; charset=utf-8',
+                            success: function (data) {
+                            },
+                            error: function() {
+                            }
+                       });
+                    }
                 }
             }
         }).data('gridster');
@@ -33,36 +79,161 @@
            foreach (var item in Model.Widgets)
            {
                <text>
-                  var $widget = $('<li>', {
-                         'class': 'color_'
-                  })
-                    .append("<div style='padding-top:5px;float:left'><i id='setting_@(item.WidgetID)' class='fa fa-gear' aria-hidden='true'></div>")
-                    .append($("<div style='float:right'><button  class='close' ><span aria-hidden='true'>&times;</span></button></div>"))
-                    .append($('<div class="chart-wrapper" style="margin:10px"><div id="chart@(item.WidgetID)" class="myChart"></div></div>'));
-                    // add widget to the grid
-                    gridster.add_widget($widget,  @(item.Width), @(item.Height));
-                    function createChart@(item.WidgetID)() {
-                        $("#chart@(item.WidgetID)").@(item.WidgetRenderType)(
+        var $widget = $('<li>', {
+            'class': 'color_'
+        })
+            .append("<div style='padding-top:5px;float:left'><i id='setting_@(item.WidgetID)' class='fa fa-gear' aria-hidden='true'></div>")
+            .append($("<div style='float:right'><button  class='close' id='close_@(item.WidgetID)' ><span aria-hidden='true'>&times;</span></button></div>"))
+            .append($('<div class="chart-wrapper" style="margin:10px"><div id="chart@(item.WidgetID)" class="myChart"></div></div>'));
+        // add widget to the grid
+        gridster.add_widget($widget,  @(item.Width), @(item.Height), @(item.Column), @(item.Row));
+        function createChart@(item.WidgetID)() {
+            $("#chart@(item.WidgetID)").@(item.WidgetRenderType)(
                                 @(Html.Raw(item.WidgetSchema))
-                        );
-                         $("#chart@(item.WidgetID)").css("height", $("#chart@(item.WidgetID)").parent().parent().innerHeight() - 25 + "px").data("@(item.WidgetRenderType)").resize();
-                    }
-                    $(document).ready(createChart@(item.WidgetID));
+            );
+            $("#chart@(item.WidgetID)").css("height", $("#chart@(item.WidgetID)").parent().parent().innerHeight() - 25 + "px").data("@(item.WidgetRenderType)").resize();
+        }
+        $(document).ready(createChart@(item.WidgetID));
 
                  </text>
                }
            }
-
-
         $('.gridster').on("click", ".close", function () {
-            gridster.remove_widget($(this).parent());
+            var item = $(this);
+            var widgetId = this.id.replace("close_", "");
+            var result = confirm("Are you sure that you delete the widget?");
+            if (result)
+            {
+                if (widgetId != null) {
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("DeleteWidget", "Home", new { } )',
+                        data:JSON.stringify({ WidgetID: widgetId}),
+                        dataType: "json",
+                        contentType: 'application/json; charset=utf-8',
+                        success: function (data) {
+                            gridster.remove_widget(item.parent().parent());
+                        },
+                        error: function() {
+                        }
+                    });
+                }
+            }
         });
 
-       
+        $("#dialog").kendoWindow({
+            actions: ["Maximize", "Close"],
+            draggable: true,
+            height: "90%",
+            modal: true,
+            resizable: false,
+            visible: false,
+            title: "Widget Settings",
+            width: "65%"
+        });
+        $("[id^='setting_']").on("click", function () {
+            var widgetId = this.id.replace("setting_", "");
+            ClearFields();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("WidgetDetails", "Home", new { } )',
+                data: JSON.stringify({ WidgetID: widgetId }),
+                dataType: "json",
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    var result = data.Data.ApiChart;
+                    if (data.Data.WidgetTypeID == 4) {
+                        result = data.Data.DonutChart;
+                    }
+                    $("#WidgetID").val(widgetId);
+                    $("#WidgetTypeID").val(data.Data.WidgetTypeID);
+                    $("#dataSource_transport_read_url").val(result.dataSource.transport.read.url);
+                    $("#dataSource_transport_read_dataType").val(result.dataSource.transport.read.dataType);
+                    if (result.dataSource.sort != null)
+                    {
+                        $("#dataSource_sort_field").val(result.dataSource.sort.field);
+                        $("#dataSource_sort_dir").val(result.dataSource.sort.dir);
+                    }
+                    $("#title_text").val(result.title.text);
+                    if (result.dataSource.group != null) {
+                        $("#dataSource_group_field").val(result.dataSource.group.field);
+                    }
+                    if (result.seriesDefaults != null) {
+                        $("#seriesDefaults_type").val(result.seriesDefaults.type);
+                        if (result.seriesDefaults.labels != null) {
+                            $("#seriesDefaults_labels_template").val(result.seriesDefaults.labels.template);
+                        }
+                    }
+                    if (result.valueAxis != null) {
+                        if (result.valueAxis.labels != null) {
+                            $("#valueAxis_labels_format").val(result.valueAxis.labels.format);
+                        }
+                    }
+                    if (result.tooltip != null) {
+                        $("#tooltip_format").val(result.tooltip.format);
+                        $("#tooltip_template").val(result.tooltip.template);
+                    }
+                    if (result.series != null) {
+                        $("#chartSeries").data("kendoGrid").setDataSource(result.series);
+                    }
+                    $("#WidgetTypeID").change();
+                },
+                error: function (e) {
+                    alert(e.statusText);
+                }
+            });
 
 
-      
+        });
+        $("#createWidget").on("click", function () {
+            var $widget = $('<li>', {
+                'class': 'color_'
+            })
+            .append("<div style='padding-top:5px;float:left'><i  id='setting_0' onclick='javascript:CreateWidget();' class='fa fa-gear' aria-hidden='true'></div>")
+            .append($("<div style='float:right'><button  class='close' ><span aria-hidden='true'>&times;</span></button></div>"))
+            .append($('<div class="chart-wrapper" style="margin:10px"><div id="chart0" class="myChart"></div></div>'));
+            gridster.add_widget($widget, 1,1);
+        });
+        CreateWidget=function()  {
+            ClearFields();
+            $("#WidgetTypeID").change();
+        }
+        ClearFields = function () {
+            $("#dialog").data("kendoWindow").open().center();
+            $("#WidgetTypeID option").remove();
+            $("#WidgetID").val("");
+            $("#dataSource_transport_read_url").val("");
+            $("#dataSource_transport_read_dataType").val("");
+            $("#dataSource_sort_field").val("");
+            $("#dataSource_sort_dir").val("");
+            $("#dataSource_group_field").val("");
+            $("#title_text").val("");
+            $("#group_field").val("");
+            $("#seriesDefaults_type").val("");
+            $("#valueAxis_labels_format").val("");
+            $("#categoryAxis_labels_rotation").val("");
+            $("#tooltip_format").val("");
+            $("#tooltip_template").val("");
+            $("#chartSeries").data("kendoGrid").setDataSource([]);
+             $.ajax({
+                type: "POST",
+                url: '@Url.Action("WidgetTypes", "Home", new { } )',
+                data: {},
+                dataType: "json",
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    $.each(data.Data, function (i) {
+                        var optionhtml = '<option value="' +
+                            data.Data[i].Value + '">' + data.Data[i].Text + '</option>';
+                        $("#WidgetTypeID").append(optionhtml);
+                    });
 
+                },
+                error: function() {
+                    alert("Error occured!!")
+                }
+            });
+        }
     });
 
 </script>

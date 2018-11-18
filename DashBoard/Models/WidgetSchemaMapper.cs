@@ -1,5 +1,4 @@
 ﻿using System;
-
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -29,18 +28,20 @@ namespace DashBoard.Models
                 }
                 else
                 {
-                    BarChart barChart = JsonConvert.DeserializeObject<BarChart>(item.WidgetTypeInputParamValues);
+                    ApiChart barChart = JsonConvert.DeserializeObject<ApiChart>(item.WidgetTypeInputParamValues);
                     FillBaseProperties(ref barchartSchema, barChart);
                     string seriesArray = string.Empty;
                     seriesArray = JsonConvert.SerializeObject(barChart.series);
                     barchartSchema = barchartSchema.Replace("\"{SeriesArray}\"", seriesArray);
                 }
             }
-          
+
             return barchartSchema;
         }
 
-        private void FillBaseProperties(ref string barchartSchema,Chart barChart)
+
+
+        private void FillBaseProperties(ref string barchartSchema, Chart barChart)
         {
             barchartSchema = barchartSchema.Replace("{Url}", barChart.dataSource.transport.read.url);
             barchartSchema = barchartSchema.Replace("{dataType}", barChart.dataSource.transport.read.dataType);
@@ -63,8 +64,8 @@ namespace DashBoard.Models
             if (barChart.valueAxis != null)
             {
                 if (barChart.valueAxis.labels != null)
-                barchartSchema = barchartSchema.Replace("{ValueAxisLableFormat}", barChart.valueAxis.labels.format);
-                barchartSchema = barchartSchema.Replace("\"{ValueAxisMajorUnit}\"", barChart.valueAxis.majorUnit.ToString());
+                    barchartSchema = barchartSchema.Replace("{ValueAxisLableFormat}", barChart.valueAxis.labels.format);
+                //  barchartSchema = barchartSchema.Replace("\"{ValueAxisMajorUnit}\"", barChart.valueAxis.majorUnit.ToString());
             }
             if (barChart.legend != null)
             {

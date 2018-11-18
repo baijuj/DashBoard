@@ -1,0 +1,229 @@
+﻿@model DashBoard.Models.DashboardModel
+
+<form id="chartSetting">
+    <div style="width:95%;margin-left:30px">
+        <div class="form-group row">
+            <div class="col-xs-6">
+                <label for="dataSources" class="control-label">Data Source</label>
+                <div class="input-group input-group-sm">
+                    <select name="dataSources" required class="form-control">
+                        <option>API</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-xs-6" style="padding-left:20px">
+                <label for="WidgetTypeID" class="control-label">Widget Type</label>
+                <div class="input-group input-group-sm">
+                    <select id="WidgetTypeID" name="WidgetTypeID"  style="width:130px" class="cs3 form-control input-small"> </select>
+                </div>
+            </div>
+            <div class="col-xs-6" style="padding-left:20px">
+                <label for="dataSource.transport.read.url" class="control-label">API Url</label>
+                <div class="input-group input-group-sm">
+                    <input type="text" class="form-control" style="width:320px" name="dataSource.transport.read.url" id="dataSource_transport_read_url">
+                </div>
+            </div>
+            <div class="col-xs-6" style="padding-left:20px">
+                <label for="dataSource.transport.read.dataType" class="control-label">Data Type</label>
+                <div class="input-group input-group-sm">
+                    <select name="dataSource.transport.read.dataType" id="dataSource_transport_read_dataType" required class="form-control">
+                        <option>json</option>
+                        <option>jsonp</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-xs-6" style="padding-left:15px">
+                <label for="dataSource.sort.field" class="control-label">Sort Field</label>
+                <div class="input-group input-group-sm">
+                    <input type="text" class="form-control" style="width:80px" id="dataSource_sort_field" name="dataSource.sort.field">
+                </div>
+            </div>
+            <div class="col-xs-6" style="padding-left:15px">
+                <label for="dataSource.sort.dir" class="control-label">Sort Direction</label>
+                <div class="input-group input-group-sm">
+                    <select name="dataSource.sort.dir" id="dataSource_sort_dir" required class="form-control">
+                        <option>asc</option>
+                        <option>desc</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-xs-6" id="div_group_field">
+                <label for="dataSource.group.field" class="control-label">Group Field</label>
+                <div class="input-group input-group-sm">
+                    <input type="text" class="form-control" id="dataSource_group_field" name="dataSource.group.field">
+                </div>
+            </div>
+            <div class="col-xs-6" style="padding-left:30px">
+                <label for="title.text" class="control-label">Widget Title</label>
+                <div class="input-group input-group-sm">
+                    <input type="text" class="form-control" style="width:615px" id="title_text" name="title.text">
+                </div>
+            </div>
+        </div>
+        <div class="form-group row" id="series_row">
+            <div class="col-xs-6">
+                <label for="seriesDefaults.type" class="control-label">Series Default Type</label>
+                <div class="input-group input-group-sm">
+                    <select name="seriesDefaults.type" id="seriesDefaults_type" required class="form-control">
+                        <option>column</option>
+                        <option>line</option>
+                        <option>area</option>
+                        <option>bar</option>
+                        <option>funnel</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-xs-6" style="padding-left:20px">
+                <label for="valueAxis.labels.format" class="control-label">Value Axis Label Format</label>
+                <div class="input-group input-group-sm">
+                    <input type="text" class="form-control" name="valueAxis.labels.format" id="valueAxis_labels_format">
+                </div>
+            </div>
+            <div class="col-xs-6" style="padding-left:20px">
+                <label for="categoryAxis.labels.rotation" class="control-label">Tooltip Format</label>
+                <div class="input-group input-group-sm">
+                    <input type="text" class="form-control" style="width:190px" name="tooltip.format" id="tooltip_format">
+                </div>
+            </div>
+        </div>
+        <div class="form-group row" id="funnel_row">
+
+            <div class="col-xs-6" >
+                <label for="tooltip.template" class="control-label">Tooltip Template</label>
+                <div class="input-group input-group-sm">
+                    <input type="text" class="form-control" style="width:400px" name="tooltip.template" id="tooltip_template">
+                
+                </div>
+            </div>
+
+        </div>
+        <div class="form-group row">
+            <div class="input-group input-group-sm">
+                <label class="control-label" style="font-weight:bold">Chart Series</label>
+                <div id="chartSeries" style="width:96%">
+
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-xs-6" style="width:100%;text-align:center">
+                <button type="button" id="btnSaveWidget" class="btn btn-default">Save</button>
+                <button type="button" id="btnCancel" class="btn btn-default">Cancel</button>
+                <input type="hidden" value="" name="WidgetID" id="WidgetID" />
+            </div>
+        </div>
+     </div>
+</form>
+<script>
+    $(document).ready(function () {
+        $("#WidgetTypeID").change(function () {
+            var widgetId = $('option:selected', this).val();
+            if (widgetId != 4) {
+                $("#dataSource_group_field").attr('disabled', "disabled");
+                $("#series_row").show();
+                $("#funnel_row").hide();
+                $("#categoryAxis_labels_rotation").removeAttr('disabled');
+            }
+            else {
+                $("#dataSource_group_field").removeAttr('disabled');
+                $("#series_row").hide();
+                $("#funnel_row").show();
+                $("#categoryAxis_labels_rotation").attr('disabled', "disabled");
+            }
+           
+        });
+        $("#btnSaveWidget").click(function (e) {
+            var postData = $('#chartSetting').serializeObject();
+            var currentData = $("#chartSeries").data("kendoGrid").dataSource.data();
+            postData.series = currentData;
+            var data = {};
+            if (postData.WidgetTypeID != 4) {
+                data = JSON.stringify({ apiChart: postData, WidgetTypeID: postData.WidgetTypeID, WidgetID: postData.WidgetID });
+            }
+            else {
+            
+                data = JSON.stringify({ DonutChart: postData, WidgetTypeID: postData.WidgetTypeID, WidgetID: postData.WidgetID });
+            }
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("SaveApiWidget", "Home", new { } )',
+                contentType: 'application/json; charset=utf-8', 
+                data: data,
+                dataType: "json", 
+                success: function (data) {
+                    $("#dialog").data("kendoWindow").close();
+                    location.reload();
+                },  
+                error: function() {  
+                    alert("Error occured!!")  
+                }  
+            });
+        });
+        $("#btnCancel").click(function (e) {
+             $("#dialog").data("kendoWindow").close();
+        });
+        $("#chartSeries").kendoGrid({
+            dataSource: {
+                data: [],
+                schema: {
+                    model: {
+                        fields: {
+                            Field: { type: "string" },
+                            CategoryField: { type: "string" },
+                            Name: { type: "string" },
+                            visibleInLegendField: { type: "string" },
+                            padding: { type: "string" }
+                        }
+                    }
+                }
+            },
+            toolbar: ["create"],
+            height: 200,
+            scrollable: true,
+            sortable: false,
+            filterable: false,
+            resizable: true,
+            paging: false,
+            editable: true,
+            columns: [
+                { field: "type", title: "Type", editor: customtypeEditor, width: "80px"},
+                { field: "field", title: "Field", width: "130px" },
+                { field: "name", title: "Name", width: "130px" },
+                { field: "categoryField", title: "CategoryField", width: "130px" },
+                { field: "visibleInLegendField", title: "Visible In Legend Field", width: "200px" },
+                { command: "destroy", title: " ", width: "150px" }
+            ]
+        });
+
+        function customtypeEditor(container, options) {
+            var guid = kendo.guid();
+            $('<select class="k-checkbox" name="type"  id="' + guid + '" ><option>column</option> <option>line</option><option>area</option><option>bar</option><option>funnel</option><option>donut</option> </select>').appendTo(container);;
+        }
+        jQuery.fn.serializeObject = function () {
+            var arrayData, objectData;
+            arrayData = this.serializeArray();
+            objectData = {};
+            $.each(arrayData, function () {
+                var value;
+                if (this.value != null) {
+                    value = this.value;
+                } else {
+                    value = '';
+                }
+                if (objectData[this.name] != null) {
+                    if (!objectData[this.name].push) {
+                        objectData[this.name] = [objectData[this.name]];
+                    }
+
+                    objectData[this.name].push(value);
+                } else {
+                    objectData[this.name] = value;
+                }
+            });
+
+            return objectData;
+        };
+    });
+</script>
