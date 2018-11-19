@@ -163,6 +163,11 @@ namespace DashBoard.Controllers
             widget.DataSourceInputParamValues = "{}";
             widget.Width = 1;
             widget.Height = 1;
+
+            //??
+            widget.Row = 1;
+            widget.Column = 3;
+
             return widget;
         }
 
