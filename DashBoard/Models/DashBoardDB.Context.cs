@@ -22,7 +22,7 @@ namespace DashBoard.Models
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-           // throw new UnintentionalCodeFirstException();
+            //throw new UnintentionalCodeFirstException();
         }
     
         public virtual DbSet<DashBoard> DashBoards { get; set; }
@@ -30,5 +30,6 @@ namespace DashBoard.Models
         public virtual DbSet<DataSource> DataSources { get; set; }
         public virtual DbSet<Widget> Widgets { get; set; }
         public virtual DbSet<WidgetType> WidgetTypes { get; set; }
+        public virtual DbSet<WidgetUserMap> WidgetUserMaps { get; set; }
     }
 }

@@ -1,0 +1,70 @@
+﻿@model DashBoard.Models.DashboardModel
+<form id="widgetShare">
+    <div style="width:90%;margin:10px">
+        <label for="dataSources" class="control-label"><strong>Users</strong></label><br />
+        <div>
+
+            @foreach (var item in Model.AllUsers)
+            {
+                if (item.UserName != User.Identity.Name)
+                {
+                    <div class="form-group row" style="margin-left:30px">
+                        <label>
+                            <input type="checkbox"
+                                   name="SelectedFruits"
+                                   value="@item.UserName" /> @item.UserName
+                            </label>
+                        </div>
+                    }
+                }
+        </div>
+
+        <div class="form-group row">
+            <div class="col-xs-6" style="width:100%;text-align:center">
+                <button type="button" id="btnSave" class="btn btn-primary">Save</button>
+                <button type="button" id="btnCancel" class="btn btn-primary">Cancel</button>
+                <input type="hidden" value="" name="WidgetID" id="WidgetID" />
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    $(document).ready(function () {
+
+        $("#btnSave").click(function (e) {
+           
+
+            var users = $('input:checked').map(function () {
+
+                return $(this).val();
+
+            });
+            currentwidgetId=$("#WidgetID").val();
+           
+
+             $.ajax({
+                type: "POST",
+                url: '@Url.Action("SaveWidgetShare", "Home", new { } )',
+                contentType: 'application/json; charset=utf-8',
+                 data: JSON.stringify( {
+                     sharedUsers: users.get(),
+                     widgetID: currentwidgetId
+                 }),
+                dataType: "json",
+                success: function (data) {
+                    $("#dialog").data("kendoWindow").close();
+                    location.reload();
+                },
+                error: function() {
+                    alert("Error occured!!")
+                }
+            });
+        });
+
+        $("#btnCancel").click(function (e) {
+            $("#widgetShare").data("kendoWindow").close();
+        });
+
+
+    });
+</script>

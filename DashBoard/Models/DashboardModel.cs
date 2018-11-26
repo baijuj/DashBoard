@@ -10,8 +10,12 @@ namespace DashBoard.Models
         public DashboardModel()
         {
             Widgets = new List<WidgetModel>();
+            AllUsers = new List<ApplicationUser>();
+
+
         }
         public List<WidgetModel> Widgets { get; set; }
+        public List<ApplicationUser> AllUsers { get; set; }
     }
     public class WidgetModel
     {

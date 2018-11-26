@@ -10,6 +10,7 @@
         <EntityTypeShape EntityType="DashBoardDBModel.DataSource" Width="1.5" PointX="0.625" PointY="0.625" IsExpanded="true" />
         <EntityTypeShape EntityType="DashBoardDBModel.Widget" Width="1.5" PointX="2.625" PointY="3.125" IsExpanded="true" />
         <EntityTypeShape EntityType="DashBoardDBModel.WidgetType" Width="1.5" PointX="0.625" PointY="3.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="DashBoardDBModel.WidgetUserMap" Width="1.5" PointX="5.375" PointY="3.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

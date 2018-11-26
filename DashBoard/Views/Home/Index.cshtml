@@ -9,6 +9,10 @@
 <div id="dialog" style="visibility:hidden;background-color:Window">
     @{Html.RenderPartial("_widget"); }
 </div>
+
+<div id="widgetShare" style="visibility:hidden;background-color:Window">
+    @{Html.RenderPartial("_widgetShare"); }
+</div>
 <script>
     $(document).ready(function () {
 
@@ -82,8 +86,9 @@
         var $widget = $('<li>', {
             'class': 'color_'
         })
-            .append("<div style='padding-top:5px;float:left'><i id='setting_@(item.WidgetID)' class='fa fa-gear' aria-hidden='true'></div>")
-            .append($("<div style='float:right'><button  class='close' id='close_@(item.WidgetID)' ><span aria-hidden='true'>&times;</span></button></div>"))
+            .append("<div style='padding-top:5px;float:left;margin-left:5px'><i id='setting_@(item.WidgetID)' class='fa fa-gear' aria-hidden='true'></div>")
+            .append("<div style='padding-top:5px;float:left;margin-left:5px'><i id='share_@(item.WidgetID)' class='fa fa-share-alt shareWidgetClass' aria-hidden='true'></div>")
+            .append($("<div style='float:right'><i  class='close fa fa-times' aria-hidden='true' id='close_@(item.WidgetID)' ></i></div>"))
             .append($('<div class="chart-wrapper" style="margin:10px"><div id="chart@(item.WidgetID)" class="myChart"></div></div>'));
         // add widget to the grid
         gridster.add_widget($widget,  @(item.Width), @(item.Height), @(item.Column), @(item.Row));
@@ -131,7 +136,20 @@
             title: "Widget Settings",
             width: "65%"
         });
+
+        $("#widgetShare").kendoWindow({
+            actions: ["Maximize", "Close"],
+            draggable: true,
+            height: "60%",
+            modal: true,
+            resizable: false,
+            visible: false,
+            title: "Share Widget",
+            width: "30%"
+        });
+
         $("[id^='setting_']").on("click", function () {
+           
             var widgetId = this.id.replace("setting_", "");
             ClearFields();
             $.ajax({
@@ -185,6 +203,8 @@
 
 
         });
+
+       
         $("#createWidget").on("click", function () {
             var $widget = $('<li>', {
                 'class': 'color_'
@@ -194,6 +214,13 @@
             .append($('<div class="chart-wrapper" style="margin:10px"><div id="chart0" class="myChart"></div></div>'));
             gridster.add_widget($widget, 1,1);
         });
+
+        $("[id^='share_']").on("click", function () {
+            var widgetId = this.id.replace("share_", "");
+            $("#widgetShare").data("kendoWindow").open().center();
+            $("#WidgetID").val(widgetId);
+        });
+
         CreateWidget=function()  {
             ClearFields();
             $("#WidgetTypeID").change();

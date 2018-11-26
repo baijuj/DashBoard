@@ -4,8 +4,19 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="DashBoardDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityContainer Name="DashBoardDBModelStoreContainer" />
+    <Schema Namespace="DashBoardDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="WidgetUserMap">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserName" Type="nvarchar" MaxLength="256" />
+          <Property Name="WidgetID" Type="int" />
+          <Property Name="IsOwner" Type="bit" />
+        </EntityType>
+        <EntityContainer Name="DashBoardDBModelStoreContainer">
+          <EntitySet Name="WidgetUserMap" EntityType="Self.WidgetUserMap" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
@@ -65,14 +76,34 @@
           <EntitySet Name="DataSources" EntityType="Self.DataSource" />
           <EntitySet Name="Widgets" EntityType="Self.Widget" />
           <EntitySet Name="WidgetTypes" EntityType="Self.WidgetType" />
+          <EntitySet Name="WidgetUserMaps" EntityType="DashBoardDBModel.WidgetUserMap" />
         </EntityContainer>
+        <EntityType Name="WidgetUserMap">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserName" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="WidgetID" Type="Int32" />
+          <Property Name="IsOwner" Type="Boolean" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="DashBoardDBModelStoreContainer" CdmEntityContainer="DashBoardDBEntities">
-          </EntityContainerMapping>
+          <EntitySetMapping Name="WidgetUserMaps">
+            <EntityTypeMapping TypeName="DashBoardDBModel.WidgetUserMap">
+              <MappingFragment StoreEntitySet="WidgetUserMap">
+                <ScalarProperty Name="IsOwner" ColumnName="IsOwner" />
+                <ScalarProperty Name="WidgetID" ColumnName="WidgetID" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
   </edmx:Runtime>

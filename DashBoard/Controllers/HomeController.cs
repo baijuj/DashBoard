@@ -39,6 +39,9 @@ namespace DashBoard.Controllers
                 }
             }
 
+            var applicationContext = new ApplicationDbContext();
+            model.AllUsers = applicationContext.Users.ToList();
+
             return View(model);
         }
         public JsonResult WidgetTypes()
@@ -155,7 +158,11 @@ namespace DashBoard.Controllers
             return Json(new { Data = "Successfully saved" });
         }
 
-        private static Widget CreateWidgetObject()
+        public ActionResult SaveWidgetShare(string[] sharedUsers, string widgetID)
+        {
+            return Json("");
+        }
+            private static Widget CreateWidgetObject()
         {
             Widget widget = new Widget();
             widget.WidgetName = "Widget " + new Random().Next();
