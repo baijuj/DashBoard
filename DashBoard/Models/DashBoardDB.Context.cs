@@ -12,7 +12,8 @@ namespace DashBoard.Models
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
-    
+    using System.Data.Entity.ModelConfiguration.Conventions;
+
     public partial class DashBoardDBEntities : DbContext
     {
         public DashBoardDBEntities()
@@ -23,8 +24,10 @@ namespace DashBoard.Models
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             //throw new UnintentionalCodeFirstException();
+            base.OnModelCreating(modelBuilder);
+
         }
-    
+
         public virtual DbSet<DashBoard> DashBoards { get; set; }
         public virtual DbSet<DashBoardUserMap> DashBoardUserMaps { get; set; }
         public virtual DbSet<DataSource> DataSources { get; set; }

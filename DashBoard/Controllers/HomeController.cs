@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using DashBoard.Models;
 using Newtonsoft.Json;
+using Microsoft.AspNet.Identity;
 
 namespace DashBoard.Controllers
 {
@@ -15,10 +16,16 @@ namespace DashBoard.Controllers
         [Authorize]
         public ActionResult Index()
         {
+            string currentUser = User.Identity.Name;
             var model = new DashboardModel();
             using (var dbContext = new DashBoardDBEntities())
             {
-                var widgets = dbContext.Widgets.ToList();
+                //var widgets = dbContext.Widgets.ToList();
+                var widgets = (from w in dbContext.Widgets
+                               join u in dbContext.WidgetUserMaps
+                               on w.WidgetID equals u.WidgetID
+                               where u.UserName == currentUser
+                               select w).ToList();
 
                 foreach (Widget item in widgets)
                 {
@@ -125,6 +132,7 @@ namespace DashBoard.Controllers
                         widget.DataSource = dataSource;
                         dbContext.Entry(widget).State = EntityState.Added;
 
+
                     }
                     widget.WidgetType = widgetType;
                     widget.WidgetTypeID = widgetType.WidgetTypeID;
@@ -152,17 +160,39 @@ namespace DashBoard.Controllers
                     widget.WidgetTypeInputParamValues = widgetSchema;
                     dbContext.SaveChanges();
                 }
-
-
+                //user mapping
+                WidgetUserMap userMap = new WidgetUserMap();
+                userMap.UserName = User.Identity.Name;
+                userMap.WidgetID = Convert.ToInt32(widget.WidgetID);
+                userMap.IsOwner = true;
+                dbContext.WidgetUserMaps.Add(userMap);
+                dbContext.SaveChanges();
             }
             return Json(new { Data = "Successfully saved" });
         }
 
         public ActionResult SaveWidgetShare(string[] sharedUsers, string widgetID)
         {
+            using (var dbContext = new DashBoardDBEntities())
+            {
+                foreach (string user in sharedUsers)
+                {
+                    //dbContext.WidgetUserMaps.Remove
+                    var currentMap = dbContext.WidgetUserMaps.Where(c => c.UserName == user && c.WidgetID.ToString() == widgetID && c.IsOwner != true).FirstOrDefault();
+                    if(currentMap!=null)
+                        dbContext.WidgetUserMaps.Remove(currentMap);
+
+                    WidgetUserMap userMap = new WidgetUserMap();
+                    userMap.UserName = user;
+                    userMap.WidgetID =Convert.ToInt32(widgetID);
+                    dbContext.WidgetUserMaps.Add(userMap);
+                }
+
+                dbContext.SaveChanges();
+            }
             return Json("");
         }
-            private static Widget CreateWidgetObject()
+        private static Widget CreateWidgetObject()
         {
             Widget widget = new Widget();
             widget.WidgetName = "Widget " + new Random().Next();
