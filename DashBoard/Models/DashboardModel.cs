@@ -19,6 +19,7 @@ namespace DashBoard.Models
     }
     public class WidgetModel
     {
+        public string DataSourceName { get; set; }
         public int WidgetID { get; set; }
         public string WidgetName { get; set; }
         public string WidgetType { get; set; }

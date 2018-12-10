@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using DashBoard.Models;
 using Newtonsoft.Json;
 using Microsoft.AspNet.Identity;
+using System.IO;
 
 namespace DashBoard.Controllers
 {
@@ -95,6 +96,7 @@ namespace DashBoard.Controllers
                         barChart = JsonConvert.DeserializeObject<ApiChart>(result.WidgetTypeInputParamValues);
                         var data = new WidgetModel()
                         {
+                            DataSourceName = result.DataSource.DataSourceType,
                             ApiChart = barChart,
                             WidgetTypeID = result.WidgetTypeID,
                             WidgetID = WidgetID
@@ -106,6 +108,7 @@ namespace DashBoard.Controllers
                         donutChart = JsonConvert.DeserializeObject<DonutChart>(result.WidgetTypeInputParamValues);
                         var data = new WidgetModel()
                         {
+                            DataSourceName = result.DataSource.DataSourceType,
                             DonutChart = donutChart,
                             WidgetTypeID = result.WidgetTypeID,
                             WidgetID = WidgetID
@@ -122,18 +125,17 @@ namespace DashBoard.Controllers
             {
                 var widget = dbContext.Widgets.Where(t => t.WidgetID == model.WidgetID).FirstOrDefault();
                 var widgetType = dbContext.WidgetTypes.Where(t => t.WidgetTypeID == model.WidgetTypeID).FirstOrDefault();
+                DataSource dataSource = dbContext.DataSources.Where(t => t.DataSourceType == model.DataSourceName).FirstOrDefault();
                 if (model.ApiChart != null)
                 {
                     if (widget == null)
                     {
                         widget = CreateWidgetObject();
-                        DashBoard.Models.DataSource dataSource = dbContext.DataSources.Where(t => t.DataSourceID == 1).FirstOrDefault();
-                        dbContext.DataSources.Attach(dataSource);
-                        widget.DataSource = dataSource;
                         dbContext.Entry(widget).State = EntityState.Added;
-
-
                     }
+                    dbContext.DataSources.Attach(dataSource);
+                    widget.DataSource = dataSource;
+
                     widget.WidgetType = widgetType;
                     widget.WidgetTypeID = widgetType.WidgetTypeID;
                     widget.WidgetTypeInputParamValues = JsonConvert.SerializeObject(model.ApiChart);
@@ -142,16 +144,17 @@ namespace DashBoard.Controllers
                     widget.WidgetTypeInputParamValues = widgetSchema;
                     dbContext.SaveChanges();
                 }
-                if (model.DonutChart != null && widget != null && widgetType.WidgetTypeID == 4)
+                if (model.DonutChart != null && widgetType.WidgetTypeID == 4)
                 {
                     if (widget == null)
                     {
                         widget = CreateWidgetObject();
-                        DashBoard.Models.DataSource dataSource = dbContext.DataSources.Where(t => t.DataSourceID == 1).FirstOrDefault();
-                        dbContext.DataSources.Attach(dataSource);
-                        widget.DataSource = dataSource;
                         dbContext.Entry(widget).State = EntityState.Added;
                     }
+                    dbContext.DataSources.Attach(dataSource);
+                    widget.DataSource = dataSource;
+
+
                     widget.WidgetType = widgetType;
                     widget.WidgetTypeID = widgetType.WidgetTypeID;
                     widget.WidgetTypeInputParamValues = JsonConvert.SerializeObject(model.DonutChart);
@@ -247,6 +250,81 @@ namespace DashBoard.Controllers
             }
             return Json(new { Data = "Updated" });
         }
+        [Authorize]
+        public JsonResult GetNotificationWidget()
+        {
+            NotificationComponent NC = new NotificationComponent();
+            var list = NC.GetNotifications(User.Identity.Name);
+           return new JsonResult { Data = list, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+        }
+
+        public JsonResult UpdateNotifications()
+        {
+            using (var dbContext = new DashBoardDBEntities())
+            {
+                var widgets = dbContext.WidgetUserMaps.Where(t => t.UserName == User.Identity.Name).ToList();
+                foreach(WidgetUserMap widget in widgets)
+                {
+                    widget.IsRead = true;
+                }
+                dbContext.SaveChanges();
+            }
+            return Json("");
+        }
+
+        public JsonResult GetDataSources()
+        {
+            List<SelectListItem> result = new List<SelectListItem>();
+            using (var dbContext = new DashBoardDBEntities())
+            {
+                result = (from d in dbContext.DataSources
+                          select new SelectListItem
+                          {
+                              Text = d.DataSourceType,
+                              Value = d.DataSourceID.ToString()
+                          }).ToList();
+
+            }
+            return Json(new { Data = result });
+        }
+
+
+        [HttpPost]
+        public void UploadCSV()
+        {
+            for (int i = 0; i < Request.Files.Count; i++)
+            {
+                var file = Request.Files[i];
+
+                var fileName = Path.GetFileName(file.FileName);
+
+                var path = Path.Combine(Server.MapPath("~/App_Data/"), fileName);
+                file.SaveAs(path);
+            }
+
+        }
+        public JsonResult GetCSVFileData(string fileName)
+        {
+            var path = System.IO.Path.Combine(Server.MapPath("~/App_Data/"), fileName);
+            var csv = new List<string[]>();
+            var lines = System.IO.File.ReadAllLines(path);
+            foreach (string line in lines)
+                csv.Add(line.Split(','));
+            var properties = lines[0].Split(',');
+            var listObjResult = new List<Dictionary<string, string>>();
+            for (int i = 1; i < lines.Length; i++)
+            {
+                var objResult = new Dictionary<string, string>();
+                for (int j = 0; j < properties.Length; j++)
+                    objResult.Add(properties[j], csv[i][j]);
+                listObjResult.Add(objResult);
+            }
+            var result = JsonConvert.SerializeObject(listObjResult);
+            var dynamicObject = JsonConvert.DeserializeObject<dynamic>(result);
+            return Json(listObjResult, JsonRequestBehavior.AllowGet);
+        }
+
+
 
     }
 }

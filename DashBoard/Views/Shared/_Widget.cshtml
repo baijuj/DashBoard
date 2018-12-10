@@ -6,21 +6,25 @@
             <div class="col-xs-6">
                 <label for="dataSources" class="control-label">Data Source</label>
                 <div class="input-group input-group-sm">
-                    <select name="dataSources" required class="form-control">
-                        <option>API</option>
-                    </select>
+                    <select id="dataSources" name="dataSources" style="width:70px" class="cs3 form-control input-small"> </select>
+                </div>
+            </div>
+            <div class="col-xs-6" style="padding-left:20px" id="ApiUrlDiv">
+                <label for="dataSource.transport.read.url" class="control-label">API Url</label>
+                <div class="input-group input-group-sm">
+                    <input type="text" class="form-control" style="width:320px" name="dataSource.transport.read.url" id="dataSource_transport_read_url">
+                </div>
+            </div>
+            <div class="col-xs-6" style="padding-left:20px" id="csvFileDiv">
+                <label for="csvFile" class="control-label">Selected File:</label><span style="font-weight:bold" id="selectedCSV"></span>
+                <div class="input-group input-group-sm">
+                    <input type="file" class="form-control" accept=".csv" style="width:320px" name="csvFile" id="csvFile">
                 </div>
             </div>
             <div class="col-xs-6" style="padding-left:20px">
                 <label for="WidgetTypeID" class="control-label">Widget Type</label>
                 <div class="input-group input-group-sm">
-                    <select id="WidgetTypeID" name="WidgetTypeID"  style="width:130px" class="cs3 form-control input-small"> </select>
-                </div>
-            </div>
-            <div class="col-xs-6" style="padding-left:20px">
-                <label for="dataSource.transport.read.url" class="control-label">API Url</label>
-                <div class="input-group input-group-sm">
-                    <input type="text" class="form-control" style="width:320px" name="dataSource.transport.read.url" id="dataSource_transport_read_url">
+                    <select id="WidgetTypeID" name="WidgetTypeID" style="width:130px" class="cs3 form-control input-small"> </select>
                 </div>
             </div>
             <div class="col-xs-6" style="padding-left:20px">
@@ -90,11 +94,11 @@
         </div>
         <div class="form-group row" id="funnel_row">
 
-            <div class="col-xs-6" >
+            <div class="col-xs-6">
                 <label for="tooltip.template" class="control-label">Tooltip Template</label>
                 <div class="input-group input-group-sm">
                     <input type="text" class="form-control" style="width:400px" name="tooltip.template" id="tooltip_template">
-                
+
                 </div>
             </div>
 
@@ -114,7 +118,7 @@
                 <input type="hidden" value="" name="WidgetID" id="WidgetID" />
             </div>
         </div>
-     </div>
+    </div>
 </form>
 <script>
     $(document).ready(function () {
@@ -132,33 +136,86 @@
                 $("#funnel_row").show();
                 $("#categoryAxis_labels_rotation").attr('disabled', "disabled");
             }
-           
+
+        });
+        $("#dataSources").change(function () {
+            var dataSource = $('option:selected', this).text();
+            if (dataSource == "API") {
+                $("#ApiUrlDiv").show();
+                $("#csvFileDiv").hide();
+            }
+            else if (dataSource == "CSV") {
+                $("#ApiUrlDiv").hide();
+                $("#csvFileDiv").show();
+            }
+            else {
+                $("#ApiUrlDiv").show();
+                $("#csvFileDiv").hide();
+            }
         });
         $("#btnSaveWidget").click(function (e) {
+            var csvUrl = "";
+            dataSourceName = "API";
+            debugger;
+            if ($("#dataSources  :selected").text() == "CSV") {
+
+                var formData = new FormData();
+                var totalFiles = document.getElementById("csvFile").files.length;
+                for (var i = 0; i < totalFiles; i++) {
+                    var file = document.getElementById("csvFile").files[i];
+                    formData.append("csvFile", file);
+                }
+                var filename = $('input[type=file]').val().split('\\').pop();
+
+                if ((filename != undefined && filename.length > 0)) //
+                {
+                    csvUrl = "/Home/GetCSVFileData?fileName=" + filename;
+                }
+                else if ($("#selectedCSV").html().length > 0){
+                    csvUrl = "/Home/GetCSVFileData?fileName=" + $("#selectedCSV").html();
+                }
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("UploadCSV", "Home", new { } )',
+                    data: formData,
+                    dataType: 'json',
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                    },
+                    error: function (error) {
+                    }
+                });
+            }
             var postData = $('#chartSetting').serializeObject();
             var currentData = $("#chartSeries").data("kendoGrid").dataSource.data();
             postData.series = currentData;
+            if (csvUrl.length > 0 && $("#dataSources  :selected").text() == "CSV")
+            {
+                postData["dataSource.transport.read.url"] = csvUrl;
+                dataSourceName = "CSV";
+            }
             var data = {};
             if (postData.WidgetTypeID != 4) {
-                data = JSON.stringify({ apiChart: postData, WidgetTypeID: postData.WidgetTypeID, WidgetID: postData.WidgetID });
+                data = JSON.stringify({ apiChart: postData, WidgetTypeID: postData.WidgetTypeID, WidgetID: postData.WidgetID, DataSourceName: dataSourceName });
             }
             else {
-            
-                data = JSON.stringify({ DonutChart: postData, WidgetTypeID: postData.WidgetTypeID, WidgetID: postData.WidgetID });
+
+                data = JSON.stringify({ DonutChart: postData, WidgetTypeID: postData.WidgetTypeID, WidgetID: postData.WidgetID, DataSourceName: dataSourceName });
             }
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("SaveApiWidget", "Home", new { } )',
-                contentType: 'application/json; charset=utf-8', 
+                contentType: 'application/json; charset=utf-8',
                 data: data,
-                dataType: "json", 
+                dataType: "json",
                 success: function (data) {
                     $("#dialog").data("kendoWindow").close();
                     location.reload();
-                },  
-                error: function() {  
-                    alert("Error occured!!")  
-                }  
+                },
+                error: function() {
+                    alert("Error occured!!")
+                }
             });
         });
         $("#btnCancel").click(function (e) {

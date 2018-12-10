@@ -16,8 +16,8 @@ namespace DashBoard.Models
         {
             string barchartSchema = string.Empty;
             barchartSchema = item.WidgetType.WidgetSchema;
-            if (item.DataSource.DataSourceID == 1)
-            {
+            //if (item.DataSource.DataSourceID == 1)
+            //{
                 if (item.WidgetType.WidgetTypeID == 4)
                 {
                     string seriesArray = string.Empty;
@@ -34,7 +34,7 @@ namespace DashBoard.Models
                     seriesArray = JsonConvert.SerializeObject(barChart.series);
                     barchartSchema = barchartSchema.Replace("\"{SeriesArray}\"", seriesArray);
                 }
-            }
+            //}
 
             return barchartSchema;
         }

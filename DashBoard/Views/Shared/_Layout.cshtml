@@ -19,6 +19,68 @@
     <script src="http://kendo.cdn.telerik.com/2018.3.1017/js/kendo.all.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.gridster/0.5.6/jquery.gridster.min.js"></script>
     <link href="//cdnjs.cloudflare.com/ajax/libs/jquery.gridster/0.5.6/jquery.gridster.css" rel="stylesheet" />
+
+    <script src="~/Scripts/jquery.signalR-2.4.0.min.js"></script>
+    <script src="/signalr/hubs"></script>
+
+    <style type="text/css">
+
+        .noti-content {
+            position: fixed;
+            right: 100px;
+            background: #e5e5e5;
+            border-radius: 4px;
+            top: 47px;
+            width: 250px;
+            display: none;
+            border: 1px solid #9E988B;
+            z-index: 500 !important;
+        }
+
+        ul#notiContent {
+            max-height: 200px;
+            overflow: auto;
+            padding: 0px;
+            margin: 0px;
+            padding-left: 20px;
+           
+        }
+
+
+
+            ul#notiContent li {
+                margin: 3px;
+                padding: 6px;
+                background: #fff;
+                font-weight: normal !important;
+            }
+
+        .noti-top-arrow {
+            border-color: transparent;
+            border-bottom-color: #F5DEB3;
+            border-style: dashed dashed solid;
+            border-width: 0 8.5px 8.5px;
+            position: absolute;
+            right: 32px;
+            top: -8px;
+        }
+
+        span.noti {
+            color: #FF2323;
+            margin: 15px;
+            position: fixed;
+            right: 100px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        span.count {
+            position: relative;
+            top: 9px;
+            right: 7px;
+            color:red;
+        }
+    </style>
 </head>
 
 <body>
@@ -46,7 +108,14 @@
                         <li class="nav-item dropdown user-container">
                             <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
                                 <div class="user-details">
-                                    <img src="~/Content/images/user.png" />
+                                    
+                                    
+                                        <img src="~/Content/images/user.png" />
+                                    <span class="count">&nbsp;</span>
+                                    <div class="noti-content">
+                                        <div class="noti-top-arrow"></div>
+                                        <ul id="notiContent"></ul>
+                                    </div>
                                     <span style="color:white">@User.Identity.GetUserName()</span>
                                 </div>
                             </a>
@@ -96,6 +165,101 @@
             $('.toggle-btn').click(function () {
                 $('.sidebar').toggleClass('in');
             });
+
+
+
+
+            /////signalR
+            // Click on notification icon for show notification
+            $('span.count').click(function (e) {
+                e.stopPropagation();
+                $('.noti-content').show();
+
+                    updateNotification();
+
+                $('span.count').html('');  
+            })
+            // hide notifications
+            $('html').click(function () {
+                $('.noti-content').hide();
+            })
+            // update notification 
+            function updateNotification() {
+                $('#notiContent').empty();
+                $('#notiContent').append($('<li>Loading...</li>'));
+
+                $.ajax({
+                    type: 'GET',
+                    url: '/Home/GetNotificationWidget',
+                    success: function (response) {
+                        $('#notiContent').empty();
+                        if (response.length == 0) {
+                            $('#notiContent').append($('<li>No data available</li>'));
+                        }
+                        $.each(response, function (index, value) {
+                            $('#notiContent').append($('<li>New widget : ' + value.WidgetName + ' shared</li>'));
+                        });
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                })
+
+                $.ajax({
+                    type: 'GET',
+                    url: '/Home/UpdateNotifications',
+                    success: function (response) {
+                       
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                })
+
+
+            }
+            // update notification count
+            function updateNotificationCount() {
+                var count = 0;
+                //count = parseInt($('span.count').html()) || 0;
+                //count++;
+                $.ajax({
+                    type: 'GET',
+                    url: '/Home/GetNotificationWidget',
+                    success: function (response) {
+                        console.log(response.length);
+                        count = response.length;
+                        if(count>0)
+                            $('span.count').html(count);
+                        else
+                            $('span.count').html('');   
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        $('span.count').html('');
+                    }
+                })
+               
+            }
+            // signalr js code for start hub and send receive notification
+            var notificationHub = $.connection.notificationHub;
+            $.connection.hub.start().done(function () {
+                console.log('Notification hub started');
+            });
+            updateNotificationCount();
+            //signalr method for push server message to client
+            notificationHub.client.notify = function (message) {
+                if (message && message.toLowerCase() == "added") {
+                    //alert(message);
+                    updateNotificationCount();
+                }
+            }
+            ///////////
+
+
+
+
+
         });
     </script>
 </body>

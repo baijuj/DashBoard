@@ -165,7 +165,17 @@
                     }
                     $("#WidgetID").val(widgetId);
                     $("#WidgetTypeID").val(data.Data.WidgetTypeID);
-                    $("#dataSource_transport_read_url").val(result.dataSource.transport.read.url);
+
+                    $("#dataSources option:contains(" + data.Data.DataSourceName + ")").attr('selected', true);
+                    if (data.Data.DataSourceName == "CSV") {
+                        var splitUrl = result.dataSource.transport.read.url.split("?");
+                        var splitUrl1 = splitUrl[1].split("=");
+                        $("#selectedCSV").html(splitUrl1[1]);
+                    }
+                    else {
+                        $("#dataSource_transport_read_url").val(result.dataSource.transport.read.url);
+                    }
+
                     $("#dataSource_transport_read_dataType").val(result.dataSource.transport.read.dataType);
                     if (result.dataSource.sort != null)
                     {
@@ -194,10 +204,13 @@
                     if (result.series != null) {
                         $("#chartSeries").data("kendoGrid").setDataSource(result.series);
                     }
+                    $("#dataSources").change();
                     $("#WidgetTypeID").change();
                 },
                 error: function (e) {
                     alert(e.statusText);
+                    $("#dataSources").change();
+                    $("#WidgetTypeID").change();
                 }
             });
 
@@ -223,11 +236,12 @@
 
         CreateWidget=function()  {
             ClearFields();
+            $("#dataSources").change();
             $("#WidgetTypeID").change();
         }
         ClearFields = function () {
             $("#dialog").data("kendoWindow").open().center();
-            $("#WidgetTypeID option").remove();
+            //$("#WidgetTypeID option").remove();
             $("#WidgetID").val("");
             $("#dataSource_transport_read_url").val("");
             $("#dataSource_transport_read_dataType").val("");
@@ -248,7 +262,8 @@
                 data: {},
                 dataType: "json",
                 contentType: 'application/json; charset=utf-8',
-                success: function (data) {
+                 success: function (data) {
+                     $("#WidgetTypeID option").remove();
                     $.each(data.Data, function (i) {
                         var optionhtml = '<option value="' +
                             data.Data[i].Value + '">' + data.Data[i].Text + '</option>';
@@ -259,6 +274,26 @@
                 error: function() {
                     alert("Error occured!!")
                 }
+            });
+
+             $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetDataSources", "Home", new { } )',
+                data: {},  
+                dataType: "json", 
+                contentType: 'application/json; charset=utf-8',  
+                 success: function (data) {
+                    $("#dataSources option").remove();
+                    $.each(data.Data, function (i) {
+                        var optionhtml = '<option value="' +
+                            data.Data[i].Value + '">' + data.Data[i].Text + '</option>';
+                        $("#dataSources").append(optionhtml);
+                    });
+                    
+                },  
+                error: function() {  
+                    alert("Error occured!!")  
+                }  
             });
         }
     });

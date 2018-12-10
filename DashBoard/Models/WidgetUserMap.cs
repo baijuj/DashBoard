@@ -18,5 +18,6 @@ namespace DashBoard.Models
         public string UserName { get; set; }
         public Nullable<int> WidgetID { get; set; }
         public Nullable<bool> IsOwner { get; set; }
+        public Nullable<bool> IsRead { get; set; }
     }
 }
