@@ -21,6 +21,13 @@
                     <input type="file" class="form-control" accept=".csv" style="width:320px" name="csvFile" id="csvFile">
                 </div>
             </div>
+            <div class="col-xs-6" style="padding-left:20px" id="databaseDiv">
+                <label for="csvFile" class="control-label">Select Table:</label>
+                <div class="input-group input-group-sm">
+                    <select id="databaseTables" name="databaseTables" style="width:250px" class="cs3 form-control input-small"> </select>
+                    <input type="hidden" id="hidSelectedTable" />
+                </div>
+            </div>
             <div class="col-xs-6" style="padding-left:20px">
                 <label for="WidgetTypeID" class="control-label">Widget Type</label>
                 <div class="input-group input-group-sm">
@@ -143,20 +150,47 @@
             if (dataSource == "API") {
                 $("#ApiUrlDiv").show();
                 $("#csvFileDiv").hide();
+                $("#databaseDiv").hide();
             }
             else if (dataSource == "CSV") {
                 $("#ApiUrlDiv").hide();
                 $("#csvFileDiv").show();
+                $("#databaseDiv").hide();
+            }
+                else if (dataSource == "Database") {
+                $("#ApiUrlDiv").hide();
+                $("#databaseDiv").show();
+                $("#csvFileDiv").hide();
+                 $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetDatabaseTables", "Home", new { } )',
+                    data: {},  
+                    dataType: "json", 
+                    contentType: 'application/json; charset=utf-8',  
+                     success: function (data) {
+                         $("#databaseTables option").remove();
+                        $.each(data.Data, function (i) {
+                            var optionhtml = '<option value="' +
+                                data.Data[i].Value + '">' + data.Data[i].Text + '</option>';
+                            $("#databaseTables").append(optionhtml);
+                         });
+                         $("#databaseTables").val($("#hidSelectedTable").val());
+                    },  
+                    error: function() {  
+                        alert("Error occured!!")  
+                    }  
+                });
             }
             else {
                 $("#ApiUrlDiv").show();
                 $("#csvFileDiv").hide();
+                $("#databaseDiv").hide();
             }
         });
         $("#btnSaveWidget").click(function (e) {
             var csvUrl = "";
             dataSourceName = "API";
-            debugger;
+            
             if ($("#dataSources  :selected").text() == "CSV") {
 
                 var formData = new FormData();
@@ -194,6 +228,12 @@
             {
                 postData["dataSource.transport.read.url"] = csvUrl;
                 dataSourceName = "CSV";
+            }
+            else if ($("#dataSources  :selected").text() == "Database") {
+                var filename = $("#databaseTables  :selected").text();
+                var databaseUrl = "/Home/GetDatabaseData?tableName=" + filename;
+                postData["dataSource.transport.read.url"] = databaseUrl;
+                dataSourceName = "Database";
             }
             var data = {};
             if (postData.WidgetTypeID != 4) {

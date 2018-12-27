@@ -172,6 +172,12 @@
                         var splitUrl1 = splitUrl[1].split("=");
                         $("#selectedCSV").html(splitUrl1[1]);
                     }
+                    else if (data.Data.DataSourceName == "Database") {
+                        var splitUrl = result.dataSource.transport.read.url.split("?");
+                        var splitUrl1 = splitUrl[1].split("=");
+                        $("#hidSelectedTable").val(splitUrl1[1]);
+
+                    }
                     else {
                         $("#dataSource_transport_read_url").val(result.dataSource.transport.read.url);
                     }

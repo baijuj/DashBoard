@@ -81,4 +81,8 @@ namespace DashBoard.Models
         public String LabelFormat { get; set; }
         public string LabelRotation { get; set; }
     }
+    public class DatabaseParam
+    {
+        public string ConnectionString { get; set; }
+    }
 }

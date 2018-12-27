@@ -9,6 +9,8 @@ using DashBoard.Models;
 using Newtonsoft.Json;
 using Microsoft.AspNet.Identity;
 using System.IO;
+using System.Data.SqlClient;
+using System.Data;
 
 namespace DashBoard.Controllers
 {
@@ -324,7 +326,64 @@ namespace DashBoard.Controllers
             return Json(listObjResult, JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult GetDatabaseTables()
+        {
+            List<SelectListItem> result = new List<SelectListItem>();
+            using (var dbContext = new DashBoardDBEntities())
+            {
+                var dataSource = dbContext.DataSources.Where(t => t.DataSourceType == "Database").FirstOrDefault();
+                var databaseParam = JsonConvert.DeserializeObject<DatabaseParam>(dataSource.InputParams);
+                using (var connection = new SqlConnection(databaseParam.ConnectionString))
+                {
+                    connection.Open();
+                    IDbCommand cmd = new SqlCommand("SELECT Name FROM sys.tables Order by Name", connection);
+                    IDataReader dr = cmd.ExecuteReader();
+                    while (dr.Read())
+                    {
+                        result.Add(
+                                new SelectListItem
+                                {
+                                    Text = Convert.ToString(dr["Name"]),
+                                    Value = Convert.ToString(dr["Name"])
+                                }
+                            );
+                    }
+                    dr.Dispose();
+                    connection.Close();
+                }
+            }
+            return Json(new { Data = result });
+        }
+        public JsonResult GetDatabaseData(string tableName)
+        {
+            DataTable dt = new DataTable();
+            List<Dictionary<string, string>> rows = new List<Dictionary<string, string>>();
+            using (var dbContext = new DashBoardDBEntities())
+            {
+                var dataSource = dbContext.DataSources.Where(t => t.DataSourceType == "Database").FirstOrDefault();
+                var databaseParam = JsonConvert.DeserializeObject<DatabaseParam>(dataSource.InputParams);
+                using (var connection = new SqlConnection(databaseParam.ConnectionString))
+                {
+                    connection.Open();
+                    SqlCommand cmd = new SqlCommand(String.Format("SELECT * FROM {0}", tableName), connection);
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    da.Fill(dt);
 
+                    Dictionary<string, string> row;
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        row = new Dictionary<string, string>();
+                        foreach (DataColumn col in dt.Columns)
+                        {
+                            row.Add(col.ColumnName, Convert.ToString(dr[col]));
+                        }
+                        rows.Add(row);
+                    }
+                    connection.Close();
+                }
+            }
+            return Json(rows, JsonRequestBehavior.AllowGet);
+        }
 
     }
 }
