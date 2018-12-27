@@ -11,9 +11,11 @@ namespace DashBoard.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class DataSource
     {
+        [Key]
         public int DataSourceID { get; set; }
         public string DataSourceType { get; set; }
         public string InputParams { get; set; }

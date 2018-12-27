@@ -90,7 +90,7 @@ namespace DashBoard.Controllers
             DonutChart donutChart = new DonutChart();
             using (var dbContext = new DashBoardDBEntities())
             {
-                result = dbContext.Widgets.Where(t => t.WidgetID == WidgetID).FirstOrDefault();
+                result = dbContext.Widgets.Include(r => r.DataSource).Where(t => t.WidgetID == WidgetID).FirstOrDefault();
                 if (result != null)
                 {
                     if (result.WidgetTypeID != 4)

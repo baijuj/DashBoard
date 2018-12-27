@@ -11,9 +11,11 @@ namespace DashBoard.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class WidgetType
     {
+        [Key]
         public int WidgetTypeID { get; set; }
         public string WidgetName { get; set; }
         public string WidgetSchema { get; set; }
