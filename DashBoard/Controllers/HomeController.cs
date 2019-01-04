@@ -123,6 +123,7 @@ namespace DashBoard.Controllers
         }
         public ActionResult SaveApiWidget(WidgetModel model)
         {
+            bool flgNewWidget=false;
             using (var dbContext = new DashBoardDBEntities())
             {
                 var widget = dbContext.Widgets.Where(t => t.WidgetID == model.WidgetID).FirstOrDefault();
@@ -132,9 +133,11 @@ namespace DashBoard.Controllers
                 {
                     if (widget == null)
                     {
-                        widget = CreateWidgetObject();
+                        widget = CreateWidgetObject(model.ApiChart.title.text);
                         dbContext.Entry(widget).State = EntityState.Added;
+                        flgNewWidget = true;
                     }
+                   
                     dbContext.DataSources.Attach(dataSource);
                     widget.DataSource = dataSource;
 
@@ -150,9 +153,11 @@ namespace DashBoard.Controllers
                 {
                     if (widget == null)
                     {
-                        widget = CreateWidgetObject();
+                        widget = CreateWidgetObject(model.DonutChart.title.text);
                         dbContext.Entry(widget).State = EntityState.Added;
+                        flgNewWidget = true;
                     }
+                    
                     dbContext.DataSources.Attach(dataSource);
                     widget.DataSource = dataSource;
 
@@ -165,13 +170,17 @@ namespace DashBoard.Controllers
                     widget.WidgetTypeInputParamValues = widgetSchema;
                     dbContext.SaveChanges();
                 }
-                //user mapping
-                WidgetUserMap userMap = new WidgetUserMap();
-                userMap.UserName = User.Identity.Name;
-                userMap.WidgetID = Convert.ToInt32(widget.WidgetID);
-                userMap.IsOwner = true;
-                dbContext.WidgetUserMaps.Add(userMap);
-                dbContext.SaveChanges();
+                //user mapping for new widget
+                if (flgNewWidget)
+                {
+                    WidgetUserMap userMap = new WidgetUserMap();
+                    userMap.UserName = User.Identity.Name;
+                    userMap.WidgetID = Convert.ToInt32(widget.WidgetID);
+                    userMap.IsOwner = true;
+                    userMap.IsRead = true;
+                    dbContext.WidgetUserMaps.Add(userMap);
+                    dbContext.SaveChanges();
+                }
             }
             return Json(new { Data = "Successfully saved" });
         }
@@ -197,10 +206,15 @@ namespace DashBoard.Controllers
             }
             return Json("");
         }
-        private static Widget CreateWidgetObject()
+        private static Widget CreateWidgetObject(string title)
         {
+            string widgetTitle = "";
+            if (!string.IsNullOrEmpty(title))
+                widgetTitle = title;
+            else
+                widgetTitle= "Widget " + new Random().Next();
             Widget widget = new Widget();
-            widget.WidgetName = "Widget " + new Random().Next();
+            widget.WidgetName = widgetTitle;
             widget.DataSourceID = 1;
             widget.DataSourceInputParamValues = "{}";
             widget.Width = 1;
@@ -233,6 +247,12 @@ namespace DashBoard.Controllers
             {
                 var widget = dbContext.Widgets.Where(t => t.WidgetID == WidgetID).FirstOrDefault();
                 dbContext.Widgets.Remove(widget);
+
+                //remove existing mapping
+                var currentMaps = dbContext.WidgetUserMaps.Where(c =>  c.WidgetID == WidgetID );
+                if (currentMaps != null)
+                    dbContext.WidgetUserMaps.RemoveRange(currentMaps);
+
                 dbContext.SaveChanges();
             }
             return Json(new { Data = "Updated" });
@@ -271,7 +291,8 @@ namespace DashBoard.Controllers
                 }
                 dbContext.SaveChanges();
             }
-            return Json("");
+            //return Json("");
+            return Json("", JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult GetDataSources()

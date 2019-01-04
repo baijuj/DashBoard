@@ -58,8 +58,8 @@
                 },
                 stop: function (e, ui, $widget) {
                     var chart = $widget.find('.myChart')
-                    chart.css("height", chart.parent().parent().innerHeight() - 25 + "px").data("kendoChart").resize();
-                    chart.css("width", chart.parent().parent().innerWidth() + "px").data("kendoChart").resize();
+                    chart.css("height", chart.parent().parent().innerHeight() - 30 + "px").data("kendoChart").resize();
+                    chart.css("width", chart.parent().parent().innerWidth() - 20 + "px").data("kendoChart").resize();
                     var newDimensions = this.serialize($widget)[0]
                     var widgetId = $widget.find('.myChart').attr("id").replace("chart", "");
                     if (!isNaN(newDimensions.size_x) && !isNaN(newDimensions.size_y)) {
@@ -86,8 +86,8 @@
         var $widget = $('<li>', {
             'class': 'color_'
         })
-            .append("<div style='padding-top:5px;float:left;margin-left:5px'><i id='setting_@(item.WidgetID)' class='fa fa-gear' aria-hidden='true'></div>")
-            .append("<div style='padding-top:5px;float:left;margin-left:5px'><i id='share_@(item.WidgetID)' class='fa fa-share-alt shareWidgetClass' aria-hidden='true'></div>")
+            .append("<div style='padding-top:5px;float:left;margin-left:5px;margin-bottom:2px'><i id='setting_@(item.WidgetID)' class='fa fa-gear' aria-hidden='true'></div>")
+            .append("<div style='padding-top:5px;float:left;margin-left:5px;margin-bottom:2px'><i id='share_@(item.WidgetID)' class='fa fa-share-alt shareWidgetClass' aria-hidden='true'></div>")
             .append($("<div style='float:right'><i  class='close fa fa-times' aria-hidden='true' id='close_@(item.WidgetID)' ></i></div>"))
             .append($('<div class="chart-wrapper" style="margin:10px"><div id="chart@(item.WidgetID)" class="myChart"></div></div>'));
         // add widget to the grid
@@ -96,7 +96,7 @@
             $("#chart@(item.WidgetID)").@(item.WidgetRenderType)(
                                 @(Html.Raw(item.WidgetSchema))
             );
-            $("#chart@(item.WidgetID)").css("height", $("#chart@(item.WidgetID)").parent().parent().innerHeight() - 25 + "px").data("@(item.WidgetRenderType)").resize();
+            $("#chart@(item.WidgetID)").css("height", $("#chart@(item.WidgetID)").parent().parent().innerHeight() - 30 + "px").data("@(item.WidgetRenderType)").resize();
         }
         $(document).ready(createChart@(item.WidgetID));
 
@@ -118,8 +118,10 @@
                         contentType: 'application/json; charset=utf-8',
                         success: function (data) {
                             gridster.remove_widget(item.parent().parent());
+                            location.reload();
                         },
-                        error: function() {
+                        error: function () {
+                            location.reload();
                         }
                     });
                 }
@@ -165,8 +167,9 @@
                     }
                     $("#WidgetID").val(widgetId);
                     $("#WidgetTypeID").val(data.Data.WidgetTypeID);
-
+                    console.log(data.Data.DataSourceName);
                     $("#dataSources option:contains(" + data.Data.DataSourceName + ")").attr('selected', true);
+                    //$("#dataSources").find("option[text=" + data.Data.DataSourceName + "]").attr("selected", true);
                     if (data.Data.DataSourceName == "CSV") {
                         var splitUrl = result.dataSource.transport.read.url.split("?");
                         var splitUrl1 = splitUrl[1].split("=");
