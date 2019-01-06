@@ -1,4 +1,5 @@
-﻿using System;
+﻿// Baiju John - 10383630 
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Globalization;
@@ -23,7 +24,8 @@ namespace DashBoard.Controllers
             var model = new DashboardModel();
             using (var dbContext = new DashBoardDBEntities())
             {
-                //var widgets = dbContext.Widgets.ToList();
+                //Get widgets available/assigned to users for renderingr in main screen
+
                 var widgets = (from w in dbContext.Widgets
                                join u in dbContext.WidgetUserMaps
                                on w.WidgetID equals u.WidgetID
@@ -83,6 +85,8 @@ namespace DashBoard.Controllers
             }
             return Json(new { Data = barChart.series });
         }
+
+        //get widget details based on widgetID
         public JsonResult WidgetDetails(int WidgetID)
         {
             DashBoard.Models.Widget result;
@@ -121,6 +125,8 @@ namespace DashBoard.Controllers
             }
             return Json(new { Data = "Data not found" });
         }
+
+        //Save widget details passed from main screen
         public ActionResult SaveApiWidget(WidgetModel model)
         {
             bool flgNewWidget=false;
@@ -185,6 +191,7 @@ namespace DashBoard.Controllers
             return Json(new { Data = "Successfully saved" });
         }
 
+        //share widget to selected users
         public ActionResult SaveWidgetShare(string[] sharedUsers, string widgetID)
         {
             using (var dbContext = new DashBoardDBEntities())
@@ -206,6 +213,8 @@ namespace DashBoard.Controllers
             }
             return Json("");
         }
+
+        //Newly created widget initialization
         private static Widget CreateWidgetObject(string title)
         {
             string widgetTitle = "";
@@ -226,6 +235,8 @@ namespace DashBoard.Controllers
 
             return widget;
         }
+
+        //Retaining size of widget
 
         public JsonResult ResizeWidget(int WidgetID, int Width, int Height)
         {
@@ -258,6 +269,7 @@ namespace DashBoard.Controllers
             return Json(new { Data = "Updated" });
         }
 
+        //Retain position of widget
         public JsonResult RepositionWidget(int WidgetID, int Column, int Row)
         {
             using (var dbContext = new DashBoardDBEntities())
@@ -272,6 +284,8 @@ namespace DashBoard.Controllers
             }
             return Json(new { Data = "Updated" });
         }
+
+        //signalR implementation for notification to users
         [Authorize]
         public JsonResult GetNotificationWidget()
         {
@@ -326,6 +340,8 @@ namespace DashBoard.Controllers
             }
 
         }
+
+        //Get data from CSV file
         public JsonResult GetCSVFileData(string fileName)
         {
             var path = System.IO.Path.Combine(Server.MapPath("~/App_Data/"), fileName);
@@ -375,6 +391,8 @@ namespace DashBoard.Controllers
             }
             return Json(new { Data = result });
         }
+
+        //Get data from table to render dashboard
         public JsonResult GetDatabaseData(string tableName)
         {
             DataTable dt = new DataTable();

@@ -1,4 +1,5 @@
-﻿@using Microsoft.AspNet.Identity
+﻿@* Baiju John - 10383630*@
+@using Microsoft.AspNet.Identity
 <!DOCTYPE html>
 <html>
 
@@ -43,7 +44,6 @@
             padding: 0px;
             margin: 0px;
             padding-left: 20px;
-           
         }
 
 
@@ -78,7 +78,7 @@
             position: relative;
             top: 9px;
             right: 7px;
-            color:red;
+            color: red;
         }
     </style>
 </head>
@@ -104,13 +104,13 @@
                     using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
                     {
                         @Html.AntiForgeryToken()
-                        
+
                         <li class="nav-item dropdown user-container">
                             <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
                                 <div class="user-details">
-                                    
-                                    
-                                        <img src="~/Content/images/user.png" />
+
+
+                                    <img src="~/Content/images/user.png" />
                                     <span class="count">&nbsp;</span>
                                     <div class="noti-content">
                                         <div class="noti-top-arrow"></div>
@@ -139,17 +139,17 @@
                     <span>Home</span>
                 </li>
                 @*<li class="sidebar-item" id="createWidget">
-                    <i class="fa fa-folder-open-o" aria-hidden="true"></i>
-                    <span>Create</span>
-                </li>*@
+                        <i class="fa fa-folder-open-o" aria-hidden="true"></i>
+                        <span>Create</span>
+                    </li>*@
                 <li class="sidebar-item" id="createWidget" title="Create Chart">
                     <i class="fa fa-line-chart" aria-hidden="true"></i>
                     <span>Create Chart</span>
                 </li>
                 @*<li class="sidebar-item">
-                    <i class="fa fa-tasks" aria-hidden="true"></i>
-                    <span>Share</span>
-                </li>*@
+                        <i class="fa fa-tasks" aria-hidden="true"></i>
+                        <span>Share</span>
+                    </li>*@
             </ul>
         </div>
     </div>
@@ -177,13 +177,13 @@
 
                     updateNotification();
 
-                $('span.count').html('');  
+                $('span.count').html('');
             })
             // hide notifications
             $('html').click(function () {
                 $('.noti-content').hide();
             })
-            // update notification 
+            // update notification
             function updateNotification() {
                 $('#notiContent').empty();
                 $('#notiContent').append($('<li>Loading...</li>'));
@@ -209,7 +209,7 @@
                     type: 'GET',
                     url: '/Home/UpdateNotifications',
                     success: function (response) {
-                       
+
                     },
                     error: function (error) {
                         console.log(error);
@@ -232,14 +232,14 @@
                         if(count>0)
                             $('span.count').html(count);
                         else
-                            $('span.count').html('');   
+                            $('span.count').html('');
                     },
                     error: function (error) {
                         console.log(error);
                         $('span.count').html('');
                     }
                 })
-               
+
             }
             // signalr js code for start hub and send receive notification
             var notificationHub = $.connection.notificationHub;

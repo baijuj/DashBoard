@@ -1,4 +1,5 @@
-﻿@model DashBoard.Models.DashboardModel
+﻿@* Baiju John - 10383630*@
+@model DashBoard.Models.DashboardModel
 <form id="widgetShare">
     <div style="width:90%;margin:10px">
         <label for="dataSources" class="control-label"><h5>Users</h5></label>
@@ -32,8 +33,10 @@
 <script>
     $(document).ready(function () {
 
+        //Save widget share function
+
         $("#btnSave").click(function (e) {
-           
+
 
             var users = $('input:checked').map(function () {
 
@@ -41,7 +44,7 @@
 
             });
             currentwidgetId=$("#WidgetID").val();
-           
+
 
              $.ajax({
                 type: "POST",

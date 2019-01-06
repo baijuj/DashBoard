@@ -1,4 +1,5 @@
-﻿using System;
+﻿// Baiju John - 10383630 
+using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -12,6 +13,8 @@ namespace DashBoard.Models
         {
             this.item = item;
         }
+
+        //Get schema for widget based on widget type
         public string GetSchema()
         {
             string barchartSchema = string.Empty;
@@ -40,7 +43,7 @@ namespace DashBoard.Models
         }
 
 
-
+        //widget schema creation
         private void FillBaseProperties(ref string barchartSchema, Chart barChart)
         {
             barchartSchema = barchartSchema.Replace("{Url}", barChart.dataSource.transport.read.url);

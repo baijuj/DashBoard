@@ -1,4 +1,5 @@
-﻿@{
+﻿@* Baiju John - 10383630*@ 
+@{
     ViewBag.Title = "Home Page";
 }
 @using System.Globalization;
@@ -16,6 +17,8 @@
 <script>
     $(document).ready(function () {
 
+    //gridster implementation
+
         gridster = $(".gridster ul").gridster({
             widget_base_dimensions: [400, 250],
             widget_margins: [10, 10],
@@ -28,6 +31,9 @@
                   //  console.log("started the draggable event");
                 },
                 stop: function (e, ui, $widget) {
+
+                    //drag stop function. To update position of widget
+
                     var newPosition = this.serialize(this.$widgets.filter(".player-revert"))[0]
                     var field = this.$widgets.filter(".player-revert")[0].getElementsByClassName("myChart");
                     if (field != null) {
@@ -57,6 +63,9 @@
                 resize: function (e, ui, $widget) {
                 },
                 stop: function (e, ui, $widget) {
+
+                    //resize stop function. To update width and height
+
                     var chart = $widget.find('.myChart')
                     chart.css("height", chart.parent().parent().innerHeight() - 30 + "px").data("kendoChart").resize();
                     chart.css("width", chart.parent().parent().innerWidth() - 20 + "px").data("kendoChart").resize();
@@ -103,6 +112,8 @@
                  </text>
                }
            }
+
+        //widget delete event
         $('.gridster').on("click", ".close", function () {
             var item = $(this);
             var widgetId = this.id.replace("close_", "");
@@ -149,6 +160,8 @@
             title: "Share Widget",
             width: "30%"
         });
+
+        //widget setting click event
 
         $("[id^='setting_']").on("click", function () {
            
@@ -226,6 +239,7 @@
 
         });
 
+        //create menu click event
        
         $("#createWidget").on("click", function () {
             var $widget = $('<li>', {
